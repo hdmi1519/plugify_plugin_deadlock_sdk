@@ -63,26 +63,24 @@ jobs:
       - name: Package artifacts
         shell: pwsh
         run: |
-          $packageName = "plugify-plugin-deadlock-sdk-build-win"
-          $packageDir = "$packageName-v$($env:VERSION)"
-          New-Item -ItemType Directory -Path $packageDir -Force
+          $packageName = "plugify-plugin-deadlock-sdk-build-win-v$($env:VERSION)"
+          $pluginDir = "$packageName/addons/plugify/envs/plugins"
+          $binDir = "$pluginDir/bin"
+          New-Item -ItemType Directory -Path $binDir -Force
 
-          Copy-Item -Path "build/Release/plugify-plugin-deadlock-sdk.dll" -Destination "$packageDir/" -Force
-          Copy-Item -Path "build/plugify-plugin-deadlock-sdk.pplugin" -Destination "$packageDir/" -Force
-          Copy-Item -Path "signatures.jsonc" -Destination "$packageDir/" -Force
-          Copy-Item -Path "settings.jsonc" -Destination "$packageDir/" -Force
+          Copy-Item -Path "build/Release/plugify-plugin-deadlock-sdk.dll" -Destination "$binDir/" -Force
+          Copy-Item -Path "build/plugify-plugin-deadlock-sdk.pplugin" -Destination "$pluginDir/" -Force
+          Copy-Item -Path "signatures.jsonc" -Destination "$pluginDir/" -Force
+          Copy-Item -Path "settings.jsonc" -Destination "$pluginDir/" -Force
 
-          # Create archives (both with version tag and canonical name)
-          Compress-Archive -Path "$packageDir/*" -DestinationPath "$packageName.zip" -Force
-          Compress-Archive -Path "$packageDir/*" -DestinationPath "$packageName-v$($env:VERSION).zip" -Force
+          # Create archive containing addons/... folder structure for easy drag-and-drop install
+          Compress-Archive -Path "$packageName/*" -DestinationPath "$packageName.zip" -Force
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}
-          path: |
-            plugify-plugin-deadlock-sdk-build-win.zip
-            plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
+          path: plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
 
       - name: Create or Update GitHub Release
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
@@ -90,7 +88,5 @@ jobs:
         with:
           name: v${{ env.VERSION }}
           tag_name: v${{ env.VERSION }}
-          files: |
-            plugify-plugin-deadlock-sdk-build-win.zip
-            plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
+          files: plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
           generate_release_notes: true
