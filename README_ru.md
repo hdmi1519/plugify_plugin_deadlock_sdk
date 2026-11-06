@@ -87,6 +87,7 @@ SDK опирается на наработки сообществ разрабо
 ## 💻 Пример плагина на Go
 
 Использование автоматически сгенерированных биндингов из `bindings/golang`:
+`go get github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang`
 
 ```go
 package main

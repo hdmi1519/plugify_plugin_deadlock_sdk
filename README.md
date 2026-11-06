@@ -87,6 +87,7 @@ This SDK builds upon foundational work from across the Source 2 and Deadlock mod
 ## 💻 Example: Writing a Plugin in Go
 
 Using the auto-generated Go bindings from `bindings/golang`:
+`go get github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang`
 
 ```go
 package main
