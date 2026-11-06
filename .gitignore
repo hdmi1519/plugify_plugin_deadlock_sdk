@@ -32,6 +32,9 @@ CMakeScripts/
 *.obj
 *.map
 
+# Keep required vendored import libraries for linking
+!external/sourcesdk/lib/win64/*.lib
+
 # Generated root manifest & archives (only .pplugin.in is tracked in root)
 plugify-plugin-deadlock-sdk.pplugin
 *.zip

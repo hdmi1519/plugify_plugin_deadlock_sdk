@@ -5,10 +5,6 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/untrustedmodders/plugify/refs/heads/main/assets/plugify-logo.png" alt="Plugify Logo" width="128"/>
-</p>
-
-<p align="center">
   <b>A high-performance C++ Deadlock SDK plugin for the <a href="https://github.com/untrustedmodders/plugify">Plugify</a> modding ecosystem.</b>
 </p>
 
