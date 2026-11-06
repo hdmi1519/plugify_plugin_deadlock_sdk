@@ -1,4 +1,4 @@
-# Plugify Deadlock SDK (dsdk)
+# Plugify Deadlock SDK (dsdk) full AI
 
 <p align="center">
   <b>English</b> | <a href="README_ru.md">Русский</a>
