@@ -1,0 +1,48 @@
+{
+	// =========================================================================
+	// Plugify Deadlock SDK (dsdk) Configuration
+	// =========================================================================
+
+	// Logging verbosity: "trace", "debug", "info", "warning", "error"
+	"log_level": "info",
+
+	// Engine Detour Hooks toggles
+	"features": {
+		"enable_currency_hooks": true,
+		"enable_damage_hooks": true,
+		"enable_game_state_hooks": true,
+		"enable_npc_schedule_hooks": true,
+		"enable_client_hooks": true,
+		"enable_server_hooks": true,
+		"enable_usercmd_hooks": true,
+		"enable_ability_think_hooks": true,
+		"enable_entity_io_hooks": true,
+		"enable_modifier_hooks": true
+	},
+
+	// Commands & chat configuration
+	"commands": {
+		// Prefixes that trigger chat commands for players in-game (e.g. !command or /command)
+		"chat_prefixes": ["!", "/"],
+		// Optional prefix for server console commands (empty string = direct command name)
+		"server_prefix": "plg"
+	},
+
+	// Engine & GC patches
+	"patches": {
+		// Bypass GC server version check enforcement
+		"force_server_version_check": true,
+		// Disable random uptime shutdown in CCitadelServerGCSystem
+		"disable_gc_uptime_shutdown": true,
+		// Enable A2S player/rules queries
+		"enable_a2s_patch": true
+	},
+
+	// Gameplay defaults
+	"gameplay": {
+		// Allow match start sequence on any custom map
+		"match_start_on_any_map": false,
+		// Precache all hero resources on server startup
+		"precache_all_heroes": true
+	}
+}

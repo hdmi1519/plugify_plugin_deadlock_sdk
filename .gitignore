@@ -1,0 +1,46 @@
+# Prerequisites / IDEs
+.idea/
+.vs/
+.vscode/
+.PVS-Studio/
+*.suo
+*.user
+*.userosv
+*.sln.docstates
+
+# CMake
+CMakeUserPresets.json
+compile_commands.json
+.cache/
+.ccache/
+CMakeScripts/
+
+# Build artifacts & directories
+/build/
+/bin/
+/obj/
+/out/
+/cmake-build-*/
+
+# Compiled binaries
+*.dll
+*.exe
+*.exp
+*.lib
+*.pdb
+*.ilk
+*.obj
+*.map
+
+# Generated root manifest & archives (only .pplugin.in is tracked in root)
+plugify-plugin-deadlock-sdk.pplugin
+*.zip
+plugify-plugin-deadlock-sdk-build-win*/
+
+# Submodule generator build outputs
+bindings/generator/bin/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,112 @@
+#include "pch.hpp"
+#include "core/memory/data_loader.hpp"
+#include "core/logger.hpp"
+#include "core/sdk/CCitadelPlayerController.hpp"
+
+inline uintptr_t ResolveE8Call(uintptr_t callAddr) {
+    int32_t rel = *reinterpret_cast<const int32_t *>(callAddr + 1);
+    return callAddr + 5 + rel;
+}
+
+using GetHeroDataManagerFn = void *(*)();
+using HeroNameToIdFn = int *(*)(void *manager, int *outId, const char *heroName);
+using GetHeroByIdFn = void *(*)(void *manager, unsigned int heroId);
+using CreateHeroPawnFn = void *(*)(void *controller, int teamNum);
+using SelectHeroInternalFn = void (*)(void *pawn, void *heroDef);
+using ResetHeroFn = void(__fastcall *)(void *pawn, bool reset);
+using ForceRespawnFn = void(__fastcall *)(void *pawn, uint8_t releaseButtons);
+using PrecacheHeroFn = void(__fastcall *)(void *globalSet, const char *heroName, void *resourceCtx);
+
+static void *GetHeroDataManager() {
+    auto anchor = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::GetManagerAnchor");
+    if (!anchor.has_value()) return nullptr;
+    auto fn = reinterpret_cast<GetHeroDataManagerFn>(ResolveE8Call(*anchor + 0xE));
+    return fn ? fn() : nullptr;
+}
+
+static void *GetHeroDataPtr(const char *heroName) {
+    if (!heroName) return nullptr;
+    void *manager = GetHeroDataManager();
+    if (!manager) return nullptr;
+
+    auto nameToIdAddr = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::HeroNameToId");
+    auto getByIdAddr = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::GetHeroById");
+    if (!nameToIdAddr.has_value() || !getByIdAddr.has_value()) return nullptr;
+
+    auto heroNameToId = reinterpret_cast<HeroNameToIdFn>(*nameToIdAddr);
+    auto getHeroById = reinterpret_cast<GetHeroByIdFn>(*getByIdAddr);
+
+    int heroId = 0;
+    heroNameToId(manager, &heroId, heroName);
+    if (heroId <= 0) return nullptr;
+
+    return getHeroById(manager, static_cast<unsigned int>(heroId));
+}
+
+extern "C" {
+
+PLUGIN_API void SelectHero(int64_t controller, const plg::string &heroName) {
+    if (!controller) return;
+    void *heroDef = GetHeroDataPtr(heroName.c_str());
+    if (!heroDef) {
+        dsdk::Logger::Warning("SelectHero: definition not found for '{}'", heroName.c_str());
+        return;
+    }
+
+    auto *pCtrl = reinterpret_cast<CCitadelPlayerController *>(controller);
+    void *pawn = pCtrl ? pCtrl->GetHeroPawn() : nullptr;
+    if (!pawn) {
+        auto createPawnAddr = dsdk::MemoryDataLoader::Get().GetOffset("CCitadelPlayerController::CreateHeroPawn");
+        if (createPawnAddr.has_value()) {
+            auto createPawn = reinterpret_cast<CreateHeroPawnFn>(*createPawnAddr);
+            int teamNum = pCtrl ? pCtrl->m_iTeamNum.Get() : 2;
+            pawn = createPawn(reinterpret_cast<void *>(controller), teamNum);
+        }
+    }
+    if (!pawn) {
+        dsdk::Logger::Warning("SelectHero: could not obtain pawn for controller {:p}", reinterpret_cast<void *>(controller));
+        return;
+    }
+
+    auto selectInternalAddr = dsdk::MemoryDataLoader::Get().GetOffset("CCitadelPlayerPawn::SelectHeroInternal");
+    if (selectInternalAddr.has_value()) {
+        auto selectHeroInternal = reinterpret_cast<SelectHeroInternalFn>(*selectInternalAddr);
+        selectHeroInternal(pawn, heroDef);
+        dsdk::Logger::Debug("SelectHero: successfully switched to '{}'", heroName.c_str());
+    }
+}
+
+PLUGIN_API void ResetHero(int64_t pawn, bool reset) {
+    if (!pawn) return;
+    auto offset = dsdk::MemoryDataLoader::Get().GetOffset("CCitadelPlayerPawn::ResetHero");
+    if (offset.has_value()) {
+        auto fn = reinterpret_cast<ResetHeroFn>(*offset);
+        fn(reinterpret_cast<void *>(pawn), reset);
+    }
+}
+
+PLUGIN_API void PrecacheHero(const plg::string &heroName) {
+    dsdk::Logger::Debug("PrecacheHero called for hero: {}", heroName.c_str());
+}
+
+PLUGIN_API void ForceRespawn(int64_t pawn, bool releaseButtons) {
+    if (!pawn) return;
+    auto offset = dsdk::MemoryDataLoader::Get().GetOffset("CBasePlayerPawn::ForceRespawn");
+    if (!offset.has_value()) {
+        offset = dsdk::MemoryDataLoader::Get().GetOffset("CCitadelPlayerPawn::ForceRespawn");
+    }
+    if (offset.has_value()) {
+        auto fn = reinterpret_cast<ForceRespawnFn>(*offset);
+        fn(reinterpret_cast<void *>(pawn), releaseButtons ? 1 : 0);
+    }
+}
+
+PLUGIN_API int64_t GetHeroData(const plg::string &heroName) {
+    return reinterpret_cast<int64_t>(GetHeroDataPtr(heroName.c_str()));
+}
+
+PLUGIN_API plg::string GetHeroName(int64_t pawn) {
+    return plg::string("hero_inferno");
+}
+
+}

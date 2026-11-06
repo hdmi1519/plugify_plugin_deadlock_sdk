@@ -1,0 +1,4525 @@
+{
+  "$schema": "https://raw.githubusercontent.com/untrustedmodders/plugify/refs/heads/main/schemas/plugin.schema.json",
+  "version": "${DSDK_VERSION}",
+  "name": "${DSDK_PACKAGE}",
+  "description": "Deadlock SDK plugin for Plugify ecosystem",
+  "author": "gemini",
+  "website": "https://github.com/untrustedmodders",
+  "license": "GPLv3",
+  "entry": "bin/plugify-plugin-deadlock-sdk",
+  "platforms": [],
+  "language": "cpp",
+  "dependencies": [],
+  "enums": [
+    {
+      "name": "HookResult",
+      "description": "Hook callback return value",
+      "values": [
+        {
+          "name": "Continue",
+          "value": 0
+        },
+        {
+          "name": "Changed",
+          "value": 1
+        },
+        {
+          "name": "Handled",
+          "value": 2
+        },
+        {
+          "name": "Stop",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "name": "ECurrencyType",
+      "description": "Deadlock currency types",
+      "values": [
+        {
+          "name": "Invalid",
+          "value": 4294967295
+        },
+        {
+          "name": "Gold",
+          "value": 0
+        },
+        {
+          "name": "AbilityPoints",
+          "value": 1
+        },
+        {
+          "name": "AbilityUnlocks",
+          "value": 2
+        },
+        {
+          "name": "DeathPenaltyGold",
+          "value": 3
+        },
+        {
+          "name": "ItemDraftRerolls",
+          "value": 4
+        },
+        {
+          "name": "ItemEnhancements",
+          "value": 5
+        },
+        {
+          "name": "Count",
+          "value": 6
+        }
+      ]
+    },
+    {
+      "name": "ECurrencySource",
+      "description": "Deadlock currency sources",
+      "values": [
+        {
+          "name": "Invalid",
+          "value": 4294967295
+        },
+        {
+          "name": "ItemPurchase",
+          "value": 0
+        },
+        {
+          "name": "ItemUpgrade",
+          "value": 1
+        },
+        {
+          "name": "ItemSale",
+          "value": 2
+        },
+        {
+          "name": "TreasureChest",
+          "value": 3
+        },
+        {
+          "name": "AbilityPurchase",
+          "value": 4
+        },
+        {
+          "name": "StartingAmount",
+          "value": 5
+        },
+        {
+          "name": "LevelUp",
+          "value": 6
+        },
+        {
+          "name": "Cheats",
+          "value": 7
+        },
+        {
+          "name": "ResetDeathPenalty",
+          "value": 8
+        },
+        {
+          "name": "DroppedOnDeath",
+          "value": 9
+        },
+        {
+          "name": "HeroSwap",
+          "value": 10
+        },
+        {
+          "name": "PlayerKill",
+          "value": 11
+        },
+        {
+          "name": "PlayerKillAssist",
+          "value": 12
+        },
+        {
+          "name": "BossKill",
+          "value": 13
+        },
+        {
+          "name": "LaneTrooperKill",
+          "value": 14
+        },
+        {
+          "name": "NeutralTrooperKill",
+          "value": 15
+        },
+        {
+          "name": "NeutralBossKill",
+          "value": 16
+        },
+        {
+          "name": "DeniedFromEnemy",
+          "value": 17
+        },
+        {
+          "name": "AssassinatePlayerKill",
+          "value": 18
+        },
+        {
+          "name": "ItemTrophyCollector",
+          "value": 19
+        },
+        {
+          "name": "ItemCultistSacrifice",
+          "value": 20
+        },
+        {
+          "name": "ItemGooseEgg",
+          "value": 21
+        },
+        {
+          "name": "OrbPlayer",
+          "value": 22
+        },
+        {
+          "name": "OrbDeny",
+          "value": 23
+        },
+        {
+          "name": "OrbLaneTrooper",
+          "value": 24
+        },
+        {
+          "name": "OrbNeutralTrooper",
+          "value": 25
+        },
+        {
+          "name": "OrbTier1TrooperBoss",
+          "value": 26
+        },
+        {
+          "name": "OrbTier2TrooperBoss",
+          "value": 27
+        },
+        {
+          "name": "OrbBaseGuardians",
+          "value": 28
+        },
+        {
+          "name": "OrbShrines",
+          "value": 29
+        },
+        {
+          "name": "OrbTier3TrooperBoss",
+          "value": 30
+        },
+        {
+          "name": "OrbDeployable",
+          "value": 31
+        },
+        {
+          "name": "OrbTrophyKill",
+          "value": 32
+        },
+        {
+          "name": "OrbTreasureChest",
+          "value": 33
+        },
+        {
+          "name": "OrbSiegeTrooper",
+          "value": 34
+        },
+        {
+          "name": "OrbSpawner",
+          "value": 35
+        },
+        {
+          "name": "NeutralWorldPickup",
+          "value": 36
+        },
+        {
+          "name": "BreakablePickup",
+          "value": 37
+        },
+        {
+          "name": "PlayerKillComeback",
+          "value": 38
+        },
+        {
+          "name": "TeamBonus",
+          "value": 39
+        },
+        {
+          "name": "ItemDraftRerollUsed",
+          "value": 40
+        },
+        {
+          "name": "ItemEnhancementUsed",
+          "value": 41
+        },
+        {
+          "name": "StreetBrawlRoundReset",
+          "value": 42
+        },
+        {
+          "name": "Count",
+          "value": 43
+        }
+      ]
+    },
+    {
+      "name": "EGameState",
+      "description": "Deadlock game states",
+      "values": [
+        {
+          "name": "Invalid",
+          "value": 0
+        },
+        {
+          "name": "Init",
+          "value": 1
+        },
+        {
+          "name": "WaitingForPlayersToJoin",
+          "value": 2
+        },
+        {
+          "name": "HeroSelection",
+          "value": 3
+        },
+        {
+          "name": "MatchIntro",
+          "value": 4
+        },
+        {
+          "name": "WaitForMapToLoad",
+          "value": 5
+        },
+        {
+          "name": "PreGameWait",
+          "value": 6
+        },
+        {
+          "name": "GameInProgress",
+          "value": 7
+        },
+        {
+          "name": "PostGame",
+          "value": 8
+        },
+        {
+          "name": "PostGamePlayOfTheGame",
+          "value": 9
+        },
+        {
+          "name": "Abandoned",
+          "value": 10
+        },
+        {
+          "name": "End",
+          "value": 11
+        }
+      ]
+    },
+    {
+      "name": "EModifierEvent",
+      "description": "Deadlock modifier event codes",
+      "values": [
+        {
+          "name": "PreDamageTakenBroadcast",
+          "value": 0
+        },
+        {
+          "name": "DamageTakenBroadcast",
+          "value": 1
+        },
+        {
+          "name": "HealthTakenBroadcast",
+          "value": 2
+        },
+        {
+          "name": "KilledBroadcast",
+          "value": 3
+        },
+        {
+          "name": "PlayerKilledBroadcast",
+          "value": 8
+        },
+        {
+          "name": "PlayerRespawnedBroadcast",
+          "value": 9
+        },
+        {
+          "name": "NpcSpawnedBroadcast",
+          "value": 10
+        },
+        {
+          "name": "NpcKilledBroadcast",
+          "value": 11
+        },
+        {
+          "name": "AbilityExecutedBroadcast",
+          "value": 16
+        },
+        {
+          "name": "ModifierGained",
+          "value": 21
+        },
+        {
+          "name": "ModifierLost",
+          "value": 22
+        },
+        {
+          "name": "PreDamageTaken",
+          "value": 24
+        },
+        {
+          "name": "DamageTaken",
+          "value": 25
+        },
+        {
+          "name": "Killed",
+          "value": 26
+        },
+        {
+          "name": "GunFired",
+          "value": 43
+        },
+        {
+          "name": "BulletHit",
+          "value": 45
+        },
+        {
+          "name": "OverrideCurrencyChange",
+          "value": 108
+        }
+      ]
+    }
+  ],
+  "prototypes": [
+    {
+      "name": "CommandCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "args",
+          "type": "string[]"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "TimerCallback",
+      "paramTypes": [],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ModifyCurrencyCallback",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "currencyType",
+          "type": "uint32",
+          "enum": "ECurrencyType"
+        },
+        {
+          "name": "amount",
+          "type": "int32"
+        },
+        {
+          "name": "source",
+          "type": "uint32",
+          "enum": "ECurrencySource"
+        },
+        {
+          "name": "silent",
+          "type": "bool"
+        },
+        {
+          "name": "forceGain",
+          "type": "bool"
+        },
+        {
+          "name": "spendOnly",
+          "type": "bool"
+        },
+        {
+          "name": "sourceAbility",
+          "type": "int64"
+        },
+        {
+          "name": "sourceEntity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "enum": "HookResult"
+      }
+    },
+    {
+      "name": "TakeDamageCallback",
+      "paramTypes": [
+        {
+          "name": "victim",
+          "type": "int64"
+        },
+        {
+          "name": "damageInfo",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "enum": "HookResult"
+      }
+    },
+    {
+      "name": "ClientConnectCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "steamId",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ClientPutInServerCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ClientDisconnectCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "reason",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameFrameCallback",
+      "paramTypes": [
+        {
+          "name": "simulating",
+          "type": "bool"
+        },
+        {
+          "name": "firstTick",
+          "type": "bool"
+        },
+        {
+          "name": "lastTick",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "EntityCallback",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameStateChangedCallback",
+      "paramTypes": [
+        {
+          "name": "newState",
+          "type": "int32",
+          "enum": "EGameState"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "EntityIOCallback",
+      "paramTypes": [
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "inputName",
+          "type": "string"
+        },
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "activator",
+          "type": "int64"
+        },
+        {
+          "name": "caller",
+          "type": "int64"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "enum": "HookResult"
+      }
+    },
+    {
+      "name": "NpcSelectScheduleCallback",
+      "paramTypes": [
+        {
+          "name": "npc",
+          "type": "int64"
+        },
+        {
+          "name": "chosenId",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "EntityOutputCallback",
+      "paramTypes": [
+        {
+          "name": "callerClass",
+          "type": "string"
+        },
+        {
+          "name": "outputName",
+          "type": "string"
+        },
+        {
+          "name": "activator",
+          "type": "int64"
+        },
+        {
+          "name": "caller",
+          "type": "int64"
+        },
+        {
+          "name": "delay",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "enum": "HookResult"
+      }
+    },
+    {
+      "name": "ProcessUsercmdsCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "numCmds",
+          "type": "int32"
+        },
+        {
+          "name": "paused",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "AbilityThinkCallback",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "pawn",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "AddModifierCallback",
+      "paramTypes": [
+        {
+          "name": "modifierProp",
+          "type": "int64"
+        },
+        {
+          "name": "caster",
+          "type": "int64"
+        },
+        {
+          "name": "ability",
+          "type": "uint32"
+        },
+        {
+          "name": "team",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int32",
+        "enum": "HookResult"
+      }
+    },
+    {
+      "name": "HeroInitializedCallback",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventCallback",
+      "paramTypes": [
+        {
+          "name": "eventName",
+          "type": "string"
+        },
+        {
+          "name": "event",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    }
+  ],
+  "methods": [
+    {
+      "name": "AddServerCommand",
+      "group": "Commands",
+      "description": "Register a server-console-only command",
+      "funcName": "AddServerCommand",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "flags",
+          "type": "int64"
+        },
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "CommandCallback"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "AddClientCommand",
+      "group": "Commands",
+      "description": "Register a client-console-only command",
+      "funcName": "AddClientCommand",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "flags",
+          "type": "int64"
+        },
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "CommandCallback"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "AddChatCommand",
+      "group": "Commands",
+      "description": "Register a client-chat-only command",
+      "funcName": "AddChatCommand",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "flags",
+          "type": "int64"
+        },
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "CommandCallback"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "AddConsoleCommand",
+      "group": "Commands",
+      "description": "Register a server/chat console command",
+      "funcName": "AddConsoleCommand",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "flags",
+          "type": "int64"
+        },
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "CommandCallback"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "RemoveCommand",
+      "group": "Commands",
+      "description": "Unregister a console command",
+      "funcName": "RemoveCommand",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ServerCommand",
+      "group": "Commands",
+      "description": "Execute a command on the server console",
+      "funcName": "ServerCommand",
+      "paramTypes": [
+        {
+          "name": "command",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ExecuteCommandAsPlayer",
+      "group": "Commands",
+      "description": "Execute a command on behalf of a player",
+      "funcName": "ExecuteCommandAsPlayer",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "command",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ClientCommand",
+      "group": "Commands",
+      "description": "Execute command on client",
+      "funcName": "ClientCommand",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "command",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrintToChat",
+      "group": "Chat",
+      "description": "Print message to client chat",
+      "funcName": "PrintToChat",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrintToChatAll",
+      "group": "Chat",
+      "description": "Broadcast message to all players",
+      "funcName": "PrintToChatAll",
+      "paramTypes": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrintToConsole",
+      "group": "Chat",
+      "description": "Print message to client console",
+      "funcName": "PrintToConsole",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrintToConsoleAll",
+      "group": "Chat",
+      "description": "Print message to all player consoles",
+      "funcName": "PrintToConsoleAll",
+      "paramTypes": [
+        {
+          "name": "message",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetPlayerController",
+      "group": "Players",
+      "description": "Get CBasePlayerController address for player slot",
+      "funcName": "GetPlayerController",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetPlayerPawn",
+      "group": "Players",
+      "description": "Get CCitadelPlayerPawn address for player slot",
+      "funcName": "GetPlayerPawn",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetPlayerSlot",
+      "group": "Players",
+      "description": "Get player slot from controller address",
+      "funcName": "GetPlayerSlot",
+      "paramTypes": [
+        {
+          "name": "controller",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "GetPlayerName",
+      "group": "Players",
+      "description": "Get player display name",
+      "funcName": "GetPlayerName",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "GetSteamID",
+      "group": "Players",
+      "description": "Get player 64-bit SteamID",
+      "funcName": "GetSteamID",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "IsClientAuthenticated",
+      "group": "Players",
+      "description": "Check if player Steam ticket is validated",
+      "funcName": "IsClientAuthenticated",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "IsClientConnected",
+      "group": "Players",
+      "description": "Check if client is connected",
+      "funcName": "IsClientConnected",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "IsFakeClient",
+      "group": "Players",
+      "description": "Check if player is a bot/fake client",
+      "funcName": "IsFakeClient",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "CreateFakeClient",
+      "group": "Players",
+      "description": "Create a fake client in the match",
+      "funcName": "CreateFakeClient",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "DisconnectClient",
+      "group": "Players",
+      "description": "Disconnect a client with disconnection reason code",
+      "funcName": "DisconnectClient",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "reason",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "KickClient",
+      "group": "Players",
+      "description": "Kick client with message and code",
+      "funcName": "KickClient",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        },
+        {
+          "name": "code",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ChangeTeam",
+      "group": "Players",
+      "description": "Change team of player controller",
+      "funcName": "ChangeTeam",
+      "paramTypes": [
+        {
+          "name": "controller",
+          "type": "int64"
+        },
+        {
+          "name": "teamNum",
+          "type": "int32"
+        },
+        {
+          "name": "keepHero",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetPlayerPing",
+      "group": "Players",
+      "description": "Get ping of player in milliseconds",
+      "funcName": "GetPlayerPing",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "SelectHero",
+      "group": "Heroes",
+      "description": "Select a hero for controller",
+      "funcName": "SelectHero",
+      "paramTypes": [
+        {
+          "name": "controller",
+          "type": "int64"
+        },
+        {
+          "name": "heroName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ResetHero",
+      "group": "Heroes",
+      "description": "Reset hero state on pawn",
+      "funcName": "ResetHero",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "reset",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrecacheHero",
+      "group": "Heroes",
+      "description": "Precache hero assets",
+      "funcName": "PrecacheHero",
+      "paramTypes": [
+        {
+          "name": "heroName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ForceRespawn",
+      "group": "Heroes",
+      "description": "Force immediate hero pawn respawn",
+      "funcName": "ForceRespawn",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "releaseButtons",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetHeroData",
+      "group": "Heroes",
+      "description": "Lookup hero definition pointer",
+      "funcName": "GetHeroData",
+      "paramTypes": [
+        {
+          "name": "heroName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetHeroName",
+      "group": "Heroes",
+      "description": "Get name of hero for pawn",
+      "funcName": "GetHeroName",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "AddAbility",
+      "group": "Abilities",
+      "description": "Add an ability to player pawn",
+      "funcName": "AddAbility",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "abilityName",
+          "type": "string"
+        },
+        {
+          "name": "slot",
+          "type": "uint16"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "RemoveAbility",
+      "group": "Abilities",
+      "description": "Remove ability by name from pawn",
+      "funcName": "RemoveAbility",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "abilityName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "RemoveAbilityByEntity",
+      "group": "Abilities",
+      "description": "Remove ability by entity pointer",
+      "funcName": "RemoveAbilityByEntity",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "ability",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "FindAbilityByName",
+      "group": "Abilities",
+      "description": "Find ability in ability component",
+      "funcName": "FindAbilityByName",
+      "paramTypes": [
+        {
+          "name": "abilityComponent",
+          "type": "int64"
+        },
+        {
+          "name": "abilityName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetAbilityBySlot",
+      "group": "Abilities",
+      "description": "Get ability at slot index",
+      "funcName": "GetAbilityBySlot",
+      "paramTypes": [
+        {
+          "name": "abilityComponent",
+          "type": "int64"
+        },
+        {
+          "name": "slot",
+          "type": "int16"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "ExecuteAbility",
+      "group": "Abilities",
+      "description": "Cast/execute an ability",
+      "funcName": "ExecuteAbility",
+      "paramTypes": [
+        {
+          "name": "abilityComponent",
+          "type": "int64"
+        },
+        {
+          "name": "ability",
+          "type": "int64"
+        },
+        {
+          "name": "altCast",
+          "type": "bool"
+        },
+        {
+          "name": "flags",
+          "type": "uint8"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "ToggleActivate",
+      "group": "Abilities",
+      "description": "Toggle ability active status",
+      "funcName": "ToggleActivate",
+      "paramTypes": [
+        {
+          "name": "ability",
+          "type": "int64"
+        },
+        {
+          "name": "activate",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ResetAbilityCooldown",
+      "group": "Abilities",
+      "description": "Reset ability cooldown and refill charges",
+      "funcName": "ResetAbilityCooldown",
+      "paramTypes": [
+        {
+          "name": "ability",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetAbilityMaxCharges",
+      "group": "Abilities",
+      "description": "Get maximum charges of an ability",
+      "funcName": "GetAbilityMaxCharges",
+      "paramTypes": [
+        {
+          "name": "ability",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "SetUpgradeBits",
+      "group": "Abilities",
+      "description": "Set upgrade bits on ability",
+      "funcName": "SetUpgradeBits",
+      "paramTypes": [
+        {
+          "name": "ability",
+          "type": "int64"
+        },
+        {
+          "name": "newBits",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "AddItem",
+      "group": "Items",
+      "description": "Add an item to player pawn",
+      "funcName": "AddItem",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "itemName",
+          "type": "string"
+        },
+        {
+          "name": "upgradeTier",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "SellItem",
+      "group": "Items",
+      "description": "Sell an item from pawn",
+      "funcName": "SellItem",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "itemName",
+          "type": "string"
+        },
+        {
+          "name": "fullRefund",
+          "type": "bool"
+        },
+        {
+          "name": "forceSellPrice",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "GetItemImbueEffects",
+      "group": "Items",
+      "description": "Get item imbue effect flags",
+      "funcName": "GetItemImbueEffects",
+      "paramTypes": [
+        {
+          "name": "itemName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "CanImbueAbility",
+      "group": "Items",
+      "description": "Check if ability can receive imbue",
+      "funcName": "CanImbueAbility",
+      "paramTypes": [
+        {
+          "name": "targetAbility",
+          "type": "int64"
+        },
+        {
+          "name": "itemName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ImbueAbility",
+      "group": "Items",
+      "description": "Imbue item onto target ability",
+      "funcName": "ImbueAbility",
+      "paramTypes": [
+        {
+          "name": "item",
+          "type": "int64"
+        },
+        {
+          "name": "targetAbility",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ModifyCurrency",
+      "group": "Currency",
+      "description": "Modify currency (souls/gold) for player pawn",
+      "funcName": "ModifyCurrency",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "currencyType",
+          "type": "uint32",
+          "enum": "ECurrencyType"
+        },
+        {
+          "name": "amount",
+          "type": "int32"
+        },
+        {
+          "name": "source",
+          "type": "uint32",
+          "enum": "ECurrencySource"
+        },
+        {
+          "name": "silent",
+          "type": "bool"
+        },
+        {
+          "name": "forceGain",
+          "type": "bool"
+        },
+        {
+          "name": "spendOnly",
+          "type": "bool"
+        },
+        {
+          "name": "sourceAbility",
+          "type": "int64"
+        },
+        {
+          "name": "sourceEntity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetCurrency",
+      "group": "Currency",
+      "description": "Get current currency value of pawn",
+      "funcName": "GetCurrency",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "currencyType",
+          "type": "uint32",
+          "enum": "ECurrencyType"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "CreateTimer",
+      "group": "Timers",
+      "description": "Create a one-shot or repeating timer",
+      "funcName": "CreateTimer",
+      "paramTypes": [
+        {
+          "name": "interval",
+          "type": "float"
+        },
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "TimerCallback"
+        },
+        {
+          "name": "repeating",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "KillTimer",
+      "group": "Timers",
+      "description": "Stop and delete an active timer",
+      "funcName": "KillTimer",
+      "paramTypes": [
+        {
+          "name": "timerId",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "GetConfigString",
+      "group": "Configuration",
+      "description": "Read string from settings.jsonc",
+      "funcName": "GetConfigString",
+      "paramTypes": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "GetConfigInt",
+      "group": "Configuration",
+      "description": "Read int from settings.jsonc",
+      "funcName": "GetConfigInt",
+      "paramTypes": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "GetConfigBool",
+      "group": "Configuration",
+      "description": "Read bool from settings.jsonc",
+      "funcName": "GetConfigBool",
+      "paramTypes": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "GetConfigFloat",
+      "group": "Configuration",
+      "description": "Read float from settings.jsonc",
+      "funcName": "GetConfigFloat",
+      "paramTypes": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
+      "name": "GetGameState",
+      "group": "GameState",
+      "description": "Get current game state enum",
+      "funcName": "GetGameState",
+      "paramTypes": [],
+      "retType": {
+        "type": "int32",
+        "enum": "EGameState"
+      }
+    },
+    {
+      "name": "ChangeGameState",
+      "group": "GameState",
+      "description": "Force Deadlock game state change",
+      "funcName": "ChangeGameState",
+      "paramTypes": [
+        {
+          "name": "newState",
+          "type": "int32",
+          "enum": "EGameState"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetWaitingForPlayersRoster",
+      "group": "GameState",
+      "description": "Set waiting for players roster counts",
+      "funcName": "SetWaitingForPlayersRoster",
+      "paramTypes": [
+        {
+          "name": "readyCount",
+          "type": "uint32"
+        },
+        {
+          "name": "totalCount",
+          "type": "uint32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetMatchStartOnAnyMap",
+      "group": "GameState",
+      "description": "Enable/disable match start sequence on custom maps",
+      "funcName": "SetMatchStartOnAnyMap",
+      "paramTypes": [
+        {
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetMatchStartOnAnyMap",
+      "group": "GameState",
+      "description": "Check if match start on custom maps is enabled",
+      "funcName": "GetMatchStartOnAnyMap",
+      "paramTypes": [],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "RegisterGameEvent",
+      "group": "Events",
+      "description": "Register game event listener for engine event",
+      "funcName": "RegisterGameEvent",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "CreateGameEvent",
+      "group": "Events",
+      "description": "Create a new game event",
+      "funcName": "CreateGameEvent",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "force",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "FireGameEvent",
+      "group": "Events",
+      "description": "Fire game event",
+      "funcName": "FireGameEvent",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "dontBroadcast",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "FreeGameEvent",
+      "group": "Events",
+      "description": "Free game event object",
+      "funcName": "FreeGameEvent",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventGetBool",
+      "group": "Events",
+      "description": "Get boolean key from game event",
+      "funcName": "GameEventGetBool",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "def",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "GameEventGetInt",
+      "group": "Events",
+      "description": "Get int32 key from game event",
+      "funcName": "GameEventGetInt",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "def",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "GameEventGetFloat",
+      "group": "Events",
+      "description": "Get float key from game event",
+      "funcName": "GameEventGetFloat",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "def",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
+      "name": "GameEventGetString",
+      "group": "Events",
+      "description": "Get string key from game event",
+      "funcName": "GameEventGetString",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "def",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "GameEventGetUint64",
+      "group": "Events",
+      "description": "Get uint64 key from game event",
+      "funcName": "GameEventGetUint64",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "def",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "GameEventSetBool",
+      "group": "Events",
+      "description": "Set boolean key in game event",
+      "funcName": "GameEventSetBool",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "val",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventSetInt",
+      "group": "Events",
+      "description": "Set int32 key in game event",
+      "funcName": "GameEventSetInt",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "val",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventSetFloat",
+      "group": "Events",
+      "description": "Set float key in game event",
+      "funcName": "GameEventSetFloat",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "val",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventSetString",
+      "group": "Events",
+      "description": "Set string key in game event",
+      "funcName": "GameEventSetString",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "val",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GameEventGetPlayerSlot",
+      "group": "Events",
+      "description": "Gets player slot from an event key (e.g. userid)",
+      "funcName": "GameEventGetPlayerSlot",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "GameEventGetPlayerPawn",
+      "group": "Events",
+      "description": "Gets player pawn pointer from an event key (e.g. userid)",
+      "funcName": "GameEventGetPlayerPawn",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GameEventGetPlayerController",
+      "group": "Events",
+      "description": "Gets player controller pointer from an event key (e.g. userid)",
+      "funcName": "GameEventGetPlayerController",
+      "paramTypes": [
+        {
+          "name": "event",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetMapName",
+      "group": "Server",
+      "description": "Get currently loaded map name",
+      "funcName": "GetMapName",
+      "paramTypes": [],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "IsMapValid",
+      "group": "Server",
+      "description": "Check if map exists and can be loaded",
+      "funcName": "IsMapValid",
+      "paramTypes": [
+        {
+          "name": "map",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "SetServerKeyValue",
+      "group": "Server",
+      "description": "Set Steam A2S rule key-value",
+      "funcName": "SetServerKeyValue",
+      "paramTypes": [
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "ClearServerKeyValues",
+      "group": "Server",
+      "description": "Clear Steam A2S rules",
+      "funcName": "ClearServerKeyValues",
+      "paramTypes": [],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "SetServerAddons",
+      "group": "Server",
+      "description": "Set active server workshop addons",
+      "funcName": "SetServerAddons",
+      "paramTypes": [
+        {
+          "name": "addons",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "AddFileSystemSearchPath",
+      "group": "Server",
+      "description": "Add file search path",
+      "funcName": "AddFileSystemSearchPath",
+      "paramTypes": [
+        {
+          "name": "path",
+          "type": "string"
+        },
+        {
+          "name": "pathId",
+          "type": "string"
+        },
+        {
+          "name": "addType",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "HasCommandLineParm",
+      "group": "Server",
+      "description": "Check if command line argument exists",
+      "funcName": "HasCommandLineParm",
+      "paramTypes": [
+        {
+          "name": "parm",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "SetConnectRejectReason",
+      "group": "Server",
+      "description": "Set reject reason for connection rejection",
+      "funcName": "SetConnectRejectReason",
+      "paramTypes": [
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetGlobalVars",
+      "group": "Server",
+      "description": "Get CGlobalVars pointer",
+      "funcName": "GetGlobalVars",
+      "paramTypes": [],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetGameTime",
+      "group": "Server",
+      "description": "Get current engine game time in seconds",
+      "funcName": "GetGameTime",
+      "paramTypes": [],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
+      "name": "GetGameTickCount",
+      "group": "Server",
+      "description": "Get current engine tick count",
+      "funcName": "GetGameTickCount",
+      "paramTypes": [],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "FindConVar",
+      "group": "ConVars",
+      "description": "Find ConVar by name",
+      "funcName": "FindConVar",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "CreateConVar",
+      "group": "ConVars",
+      "description": "Create custom ConVar",
+      "funcName": "CreateConVar",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "flags",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "uint64"
+      }
+    },
+    {
+      "name": "GetConVarInt",
+      "group": "ConVars",
+      "description": "Get ConVar integer value",
+      "funcName": "GetConVarInt",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "GetConVarFloat",
+      "group": "ConVars",
+      "description": "Get ConVar float value",
+      "funcName": "GetConVarFloat",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
+      "name": "GetConVarString",
+      "group": "ConVars",
+      "description": "Get ConVar string value",
+      "funcName": "GetConVarString",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "GetConVarBool",
+      "group": "ConVars",
+      "description": "Get ConVar bool value",
+      "funcName": "GetConVarBool",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "SetConVarInt",
+      "group": "ConVars",
+      "description": "Set ConVar int value",
+      "funcName": "SetConVarInt",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        },
+        {
+          "name": "value",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetConVarFloat",
+      "group": "ConVars",
+      "description": "Set ConVar float value",
+      "funcName": "SetConVarFloat",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        },
+        {
+          "name": "value",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetConVarString",
+      "group": "ConVars",
+      "description": "Set ConVar string value",
+      "funcName": "SetConVarString",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint64"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "CreateDamageInfo",
+      "group": "Damage",
+      "description": "Create CTakeDamageInfo instance",
+      "funcName": "CreateDamageInfo",
+      "paramTypes": [
+        {
+          "name": "inflictor",
+          "type": "int64"
+        },
+        {
+          "name": "attacker",
+          "type": "int64"
+        },
+        {
+          "name": "ability",
+          "type": "int64"
+        },
+        {
+          "name": "damage",
+          "type": "float"
+        },
+        {
+          "name": "damageType",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "DestroyDamageInfo",
+      "group": "Damage",
+      "description": "Free CTakeDamageInfo instance",
+      "funcName": "DestroyDamageInfo",
+      "paramTypes": [
+        {
+          "name": "info",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "TakeDamage",
+      "group": "Damage",
+      "description": "Inflict damage on victim entity",
+      "funcName": "TakeDamage",
+      "paramTypes": [
+        {
+          "name": "victim",
+          "type": "int64"
+        },
+        {
+          "name": "info",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ApplyDamage",
+      "group": "Damage",
+      "description": "Apply damage bypassing damage filters",
+      "funcName": "ApplyDamage",
+      "paramTypes": [
+        {
+          "name": "victim",
+          "type": "int64"
+        },
+        {
+          "name": "info",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetMaxHealth",
+      "group": "Damage",
+      "description": "Get maximum health of entity",
+      "funcName": "GetMaxHealth",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "Heal",
+      "group": "Damage",
+      "description": "Heal entity by amount",
+      "funcName": "Heal",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "amount",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "AddModifier",
+      "group": "Modifiers",
+      "description": "Add modifier to entity",
+      "funcName": "AddModifier",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "modifierName",
+          "type": "string"
+        },
+        {
+          "name": "kv3",
+          "type": "int64"
+        },
+        {
+          "name": "caster",
+          "type": "int64"
+        },
+        {
+          "name": "ability",
+          "type": "int64"
+        },
+        {
+          "name": "team",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "RemoveModifier",
+      "group": "Modifiers",
+      "description": "Remove modifier instance from entity",
+      "funcName": "RemoveModifier",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "modifier",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "CreateEntityByName",
+      "group": "Entities",
+      "description": "Create entity instance by class name",
+      "funcName": "CreateEntityByName",
+      "paramTypes": [
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "QueueSpawnEntity",
+      "group": "Entities",
+      "description": "Queue entity spawn with optional entity keyvalues",
+      "funcName": "QueueSpawnEntity",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "ekv",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "ExecuteQueuedCreation",
+      "group": "Entities",
+      "description": "Execute queued entity creation",
+      "funcName": "ExecuteQueuedCreation",
+      "paramTypes": [],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "RemoveEntity",
+      "group": "Entities",
+      "description": "Remove/destroy entity",
+      "funcName": "RemoveEntity",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetEntityByIndex",
+      "group": "Entities",
+      "description": "Get entity pointer by index",
+      "funcName": "GetEntityByIndex",
+      "paramTypes": [
+        {
+          "name": "index",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetEntityFromHandle",
+      "group": "Entities",
+      "description": "Resolve entity pointer from uint32 handle",
+      "funcName": "GetEntityFromHandle",
+      "paramTypes": [
+        {
+          "name": "handle",
+          "type": "uint32"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetEntityHandle",
+      "group": "Entities",
+      "description": "Get handle of entity",
+      "funcName": "GetEntityHandle",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "uint32"
+      }
+    },
+    {
+      "name": "FindEntityByName",
+      "group": "Entities",
+      "description": "Find entity by name",
+      "funcName": "FindEntityByName",
+      "paramTypes": [
+        {
+          "name": "startEntity",
+          "type": "int64"
+        },
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "GetEntityDesignerName",
+      "group": "Entities",
+      "description": "Get designer name of entity",
+      "funcName": "GetEntityDesignerName",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "GetEntityClassname",
+      "group": "Entities",
+      "description": "Get class name of entity",
+      "funcName": "GetEntityClassname",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "Teleport",
+      "group": "Entities",
+      "description": "Teleport entity with position, angles and velocity",
+      "funcName": "Teleport",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "posX",
+          "type": "float"
+        },
+        {
+          "name": "posY",
+          "type": "float"
+        },
+        {
+          "name": "posZ",
+          "type": "float"
+        },
+        {
+          "name": "angPitch",
+          "type": "float"
+        },
+        {
+          "name": "angYaw",
+          "type": "float"
+        },
+        {
+          "name": "angRoll",
+          "type": "float"
+        },
+        {
+          "name": "velX",
+          "type": "float"
+        },
+        {
+          "name": "velY",
+          "type": "float"
+        },
+        {
+          "name": "velZ",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetModel",
+      "group": "Entities",
+      "description": "Set visual model of entity",
+      "funcName": "SetModel",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "modelName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetModelName",
+      "group": "Entities",
+      "description": "Get model name of entity",
+      "funcName": "GetModelName",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "SetScale",
+      "group": "Entities",
+      "description": "Set visual scale of entity",
+      "funcName": "SetScale",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "scale",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetMoveType",
+      "group": "Entities",
+      "description": "Set entity move type",
+      "funcName": "SetMoveType",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "moveType",
+          "type": "uint8"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetGravityScale",
+      "group": "Entities",
+      "description": "Set entity gravity multiplier",
+      "funcName": "SetGravityScale",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "scale",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "EntityDerivesFrom",
+      "group": "Entities",
+      "description": "Check if entity class derives from base class name",
+      "funcName": "EntityDerivesFrom",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "baseClassName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "GetSchemaFieldOffset",
+      "group": "Schema",
+      "description": "Get byte offset of class field in schema",
+      "funcName": "GetSchemaFieldOffset",
+      "paramTypes": [
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "fieldName",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "NotifyStateChanged",
+      "group": "Schema",
+      "description": "Notify network system of field modification",
+      "funcName": "NotifyStateChanged",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "fieldOffset",
+          "type": "int32"
+        },
+        {
+          "name": "chainOffset",
+          "type": "int16"
+        },
+        {
+          "name": "networkStateChangedOffset",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SetSchemaString",
+      "group": "Schema",
+      "description": "Set string field in schema structure",
+      "funcName": "SetSchemaString",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "className",
+          "type": "string"
+        },
+        {
+          "name": "fieldName",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetSchemaClassSize",
+      "group": "Schema",
+      "description": "Get sizeof schema class",
+      "funcName": "GetSchemaClassSize",
+      "paramTypes": [
+        {
+          "name": "className",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "EmitSound",
+      "group": "Sound",
+      "description": "Emit sound event from entity",
+      "funcName": "EmitSound",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "soundName",
+          "type": "string"
+        },
+        {
+          "name": "pitch",
+          "type": "int32"
+        },
+        {
+          "name": "volume",
+          "type": "float"
+        },
+        {
+          "name": "delay",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "TakeSoundEventGuid",
+      "group": "Sound",
+      "description": "Generate unique sound event GUID",
+      "funcName": "TakeSoundEventGuid",
+      "paramTypes": [],
+      "retType": {
+        "type": "uint32"
+      }
+    },
+    {
+      "name": "CreateParticle",
+      "group": "Particles",
+      "description": "Create and dispatch particle effect",
+      "funcName": "CreateParticle",
+      "paramTypes": [
+        {
+          "name": "particleName",
+          "type": "string"
+        },
+        {
+          "name": "attachType",
+          "type": "int32"
+        },
+        {
+          "name": "entity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "DestroyParticle",
+      "group": "Particles",
+      "description": "Destroy active particle instance",
+      "funcName": "DestroyParticle",
+      "paramTypes": [
+        {
+          "name": "particle",
+          "type": "int64"
+        },
+        {
+          "name": "destroyImmediately",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrecacheResource",
+      "group": "Precaching",
+      "description": "Precache resource by VPK path",
+      "funcName": "PrecacheResource",
+      "paramTypes": [
+        {
+          "name": "path",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "PrecacheModel",
+      "group": "Precaching",
+      "description": "Precache model resource",
+      "funcName": "PrecacheModel",
+      "paramTypes": [
+        {
+          "name": "modelPath",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "CreateWorldText",
+      "group": "WorldText",
+      "description": "Create 3D point_worldtext entity in the world",
+      "funcName": "CreateWorldText",
+      "paramTypes": [
+        {
+          "name": "message",
+          "type": "string"
+        },
+        {
+          "name": "x",
+          "type": "float"
+        },
+        {
+          "name": "y",
+          "type": "float"
+        },
+        {
+          "name": "z",
+          "type": "float"
+        },
+        {
+          "name": "fontSize",
+          "type": "float"
+        },
+        {
+          "name": "r",
+          "type": "uint8"
+        },
+        {
+          "name": "g",
+          "type": "uint8"
+        },
+        {
+          "name": "b",
+          "type": "uint8"
+        },
+        {
+          "name": "a",
+          "type": "uint8"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "SetWorldTextMessage",
+      "group": "WorldText",
+      "description": "Update message text of CPointWorldText",
+      "funcName": "SetWorldTextMessage",
+      "paramTypes": [
+        {
+          "name": "worldText",
+          "type": "int64"
+        },
+        {
+          "name": "text",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "CreateBeam",
+      "group": "Zones",
+      "description": "Spawn a glowing laser beam entity between two world points",
+      "funcName": "CreateBeam",
+      "paramTypes": [
+        {
+          "name": "startX",
+          "type": "float"
+        },
+        {
+          "name": "startY",
+          "type": "float"
+        },
+        {
+          "name": "startZ",
+          "type": "float"
+        },
+        {
+          "name": "endX",
+          "type": "float"
+        },
+        {
+          "name": "endY",
+          "type": "float"
+        },
+        {
+          "name": "endZ",
+          "type": "float"
+        },
+        {
+          "name": "width",
+          "type": "float"
+        },
+        {
+          "name": "r",
+          "type": "uint8"
+        },
+        {
+          "name": "g",
+          "type": "uint8"
+        },
+        {
+          "name": "b",
+          "type": "uint8"
+        },
+        {
+          "name": "a",
+          "type": "uint8"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "CreateZone",
+      "group": "Zones",
+      "description": "Create a spatial trigger volume box",
+      "funcName": "CreateZone",
+      "paramTypes": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "minX",
+          "type": "float"
+        },
+        {
+          "name": "minY",
+          "type": "float"
+        },
+        {
+          "name": "minZ",
+          "type": "float"
+        },
+        {
+          "name": "maxX",
+          "type": "float"
+        },
+        {
+          "name": "maxY",
+          "type": "float"
+        },
+        {
+          "name": "maxZ",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "DestroyZone",
+      "group": "Zones",
+      "description": "Destroy a spatial zone trigger",
+      "funcName": "DestroyZone",
+      "paramTypes": [
+        {
+          "name": "zoneId",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "LineTrace",
+      "group": "Tracing",
+      "description": "Perform physics raycast trace between start and end vectors",
+      "funcName": "LineTrace",
+      "paramTypes": [
+        {
+          "name": "startX",
+          "type": "float"
+        },
+        {
+          "name": "startY",
+          "type": "float"
+        },
+        {
+          "name": "startZ",
+          "type": "float"
+        },
+        {
+          "name": "endX",
+          "type": "float"
+        },
+        {
+          "name": "endY",
+          "type": "float"
+        },
+        {
+          "name": "endZ",
+          "type": "float"
+        },
+        {
+          "name": "mask",
+          "type": "uint32"
+        },
+        {
+          "name": "ignoreEntity",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "NpcMoveTo",
+      "group": "NPCs",
+      "description": "Direct AI NPC to move to goal location",
+      "funcName": "NpcMoveTo",
+      "paramTypes": [
+        {
+          "name": "npc",
+          "type": "int64"
+        },
+        {
+          "name": "x",
+          "type": "float"
+        },
+        {
+          "name": "y",
+          "type": "float"
+        },
+        {
+          "name": "z",
+          "type": "float"
+        },
+        {
+          "name": "run",
+          "type": "bool"
+        },
+        {
+          "name": "tolerance",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "NpcStopMoving",
+      "group": "NPCs",
+      "description": "Stop movement of AI NPC",
+      "funcName": "NpcStopMoving",
+      "paramTypes": [
+        {
+          "name": "npc",
+          "type": "int64"
+        },
+        {
+          "name": "instant",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "NpcSetEnemy",
+      "group": "NPCs",
+      "description": "Set target enemy entity of AI NPC",
+      "funcName": "NpcSetEnemy",
+      "paramTypes": [
+        {
+          "name": "npc",
+          "type": "int64"
+        },
+        {
+          "name": "enemy",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "NpcSetState",
+      "group": "NPCs",
+      "description": "Set NPC AI state",
+      "funcName": "NpcSetState",
+      "paramTypes": [
+        {
+          "name": "npc",
+          "type": "int64"
+        },
+        {
+          "name": "state",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "NpcCreateTrooper",
+      "group": "NPCs",
+      "description": "Spawn lane or neutral trooper NPC",
+      "funcName": "NpcCreateTrooper",
+      "paramTypes": [
+        {
+          "name": "posX",
+          "type": "float"
+        },
+        {
+          "name": "posY",
+          "type": "float"
+        },
+        {
+          "name": "posZ",
+          "type": "float"
+        },
+        {
+          "name": "pitch",
+          "type": "float"
+        },
+        {
+          "name": "yaw",
+          "type": "float"
+        },
+        {
+          "name": "roll",
+          "type": "float"
+        },
+        {
+          "name": "team",
+          "type": "int32"
+        },
+        {
+          "name": "type",
+          "type": "int32"
+        },
+        {
+          "name": "variant",
+          "type": "int32"
+        },
+        {
+          "name": "snapToGround",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "NavGetNearestPoint",
+      "group": "Navigation",
+      "description": "Find nearest point on navmesh",
+      "funcName": "NavGetNearestPoint",
+      "paramTypes": [
+        {
+          "name": "x",
+          "type": "float"
+        },
+        {
+          "name": "y",
+          "type": "float"
+        },
+        {
+          "name": "z",
+          "type": "float"
+        },
+        {
+          "name": "maxDistance",
+          "type": "float"
+        },
+        {
+          "name": "hull",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "NavGetGroundHeight",
+      "group": "Navigation",
+      "description": "Get ground elevation from navmesh",
+      "funcName": "NavGetGroundHeight",
+      "paramTypes": [
+        {
+          "name": "x",
+          "type": "float"
+        },
+        {
+          "name": "y",
+          "type": "float"
+        },
+        {
+          "name": "z",
+          "type": "float"
+        },
+        {
+          "name": "maxDistance",
+          "type": "float"
+        },
+        {
+          "name": "hull",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
+      "name": "BotCreate",
+      "group": "Bots",
+      "description": "Spawn a bot hero into the match",
+      "funcName": "BotCreate",
+      "paramTypes": [
+        {
+          "name": "heroName",
+          "type": "string"
+        },
+        {
+          "name": "team",
+          "type": "int32"
+        },
+        {
+          "name": "posX",
+          "type": "float"
+        },
+        {
+          "name": "posY",
+          "type": "float"
+        },
+        {
+          "name": "posZ",
+          "type": "float"
+        },
+        {
+          "name": "assignLane",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "BotGetBrain",
+      "group": "Bots",
+      "description": "Get brain entity pointer for player bot pawn",
+      "funcName": "BotGetBrain",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "BotGetPawn",
+      "group": "Bots",
+      "description": "Get pawn entity controlled by bot brain",
+      "funcName": "BotGetPawn",
+      "paramTypes": [
+        {
+          "name": "brain",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "BotSetLane",
+      "group": "Bots",
+      "description": "Assign lane index to bot",
+      "funcName": "BotSetLane",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        },
+        {
+          "name": "lane",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "bool"
+      }
+    },
+    {
+      "name": "BotGetLane",
+      "group": "Bots",
+      "description": "Get assigned lane index of bot",
+      "funcName": "BotGetLane",
+      "paramTypes": [
+        {
+          "name": "pawn",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "int32"
+      }
+    },
+    {
+      "name": "AcceptInput",
+      "group": "EntityIO",
+      "description": "Fire input on target entity",
+      "funcName": "AcceptInput",
+      "paramTypes": [
+        {
+          "name": "entity",
+          "type": "int64"
+        },
+        {
+          "name": "inputName",
+          "type": "string"
+        },
+        {
+          "name": "activator",
+          "type": "int64"
+        },
+        {
+          "name": "caller",
+          "type": "int64"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "SendNetMessage",
+      "group": "Networking",
+      "description": "Send protobuf network message to clients",
+      "funcName": "SendNetMessage",
+      "paramTypes": [
+        {
+          "name": "msgId",
+          "type": "int32"
+        },
+        {
+          "name": "protoBytes",
+          "type": "uint8[]"
+        },
+        {
+          "name": "recipientMask",
+          "type": "uint64"
+        },
+        {
+          "name": "bufType",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "GetNetMessageName",
+      "group": "Networking",
+      "description": "Get registered network message name",
+      "funcName": "GetNetMessageName",
+      "paramTypes": [
+        {
+          "name": "msgId",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "string"
+      }
+    },
+    {
+      "name": "KV3Create",
+      "group": "KeyValues3",
+      "description": "Allocate new KeyValues3 document",
+      "funcName": "KV3Create",
+      "paramTypes": [],
+      "retType": {
+        "type": "int64"
+      }
+    },
+    {
+      "name": "KV3Destroy",
+      "group": "KeyValues3",
+      "description": "Free KeyValues3 document",
+      "funcName": "KV3Destroy",
+      "paramTypes": [
+        {
+          "name": "kv3",
+          "type": "int64"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "KV3SetString",
+      "group": "KeyValues3",
+      "description": "Set string value in KeyValues3 document",
+      "funcName": "KV3SetString",
+      "paramTypes": [
+        {
+          "name": "kv3",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "KV3SetBool",
+      "group": "KeyValues3",
+      "description": "Set bool value in KeyValues3 document",
+      "funcName": "KV3SetBool",
+      "paramTypes": [
+        {
+          "name": "kv3",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "KV3SetInt",
+      "group": "KeyValues3",
+      "description": "Set int32 value in KeyValues3 document",
+      "funcName": "KV3SetInt",
+      "paramTypes": [
+        {
+          "name": "kv3",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "KV3SetFloat",
+      "group": "KeyValues3",
+      "description": "Set float value in KeyValues3 document",
+      "funcName": "KV3SetFloat",
+      "paramTypes": [
+        {
+          "name": "kv3",
+          "type": "int64"
+        },
+        {
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnModifyCurrency_Register",
+      "group": "Listeners",
+      "description": "Register Currency modification listener hook",
+      "funcName": "OnModifyCurrency_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ModifyCurrencyCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnModifyCurrency_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Currency modification listener hook",
+      "funcName": "OnModifyCurrency_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ModifyCurrencyCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnTakeDamage_Register",
+      "group": "Listeners",
+      "description": "Register Entity take damage listener hook",
+      "funcName": "OnTakeDamage_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "TakeDamageCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnTakeDamage_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity take damage listener hook",
+      "funcName": "OnTakeDamage_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "TakeDamageCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnect_Register",
+      "group": "Listeners",
+      "description": "Register Client connection listener hook",
+      "funcName": "OnClientConnect_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientConnectCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientConnect_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Client connection listener hook",
+      "funcName": "OnClientConnect_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientConnectCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientPutInServer_Register",
+      "group": "Listeners",
+      "description": "Register Client put in server listener hook",
+      "funcName": "OnClientPutInServer_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientPutInServerCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientPutInServer_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Client put in server listener hook",
+      "funcName": "OnClientPutInServer_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientPutInServerCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Register",
+      "group": "Listeners",
+      "description": "Register Client disconnect listener hook",
+      "funcName": "OnClientDisconnect_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientDisconnectCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnClientDisconnect_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Client disconnect listener hook",
+      "funcName": "OnClientDisconnect_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ClientDisconnectCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameFrame_Register",
+      "group": "Listeners",
+      "description": "Register Server game tick frame listener hook",
+      "funcName": "OnGameFrame_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameFrameCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameFrame_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Server game tick frame listener hook",
+      "funcName": "OnGameFrame_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameFrameCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityCreated_Register",
+      "group": "Listeners",
+      "description": "Register Entity created listener hook",
+      "funcName": "OnEntityCreated_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityCreated_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity created listener hook",
+      "funcName": "OnEntityCreated_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntitySpawned_Register",
+      "group": "Listeners",
+      "description": "Register Entity spawned listener hook",
+      "funcName": "OnEntitySpawned_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntitySpawned_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity spawned listener hook",
+      "funcName": "OnEntitySpawned_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityDeleted_Register",
+      "group": "Listeners",
+      "description": "Register Entity deleted listener hook",
+      "funcName": "OnEntityDeleted_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityDeleted_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity deleted listener hook",
+      "funcName": "OnEntityDeleted_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameStateChanged_Register",
+      "group": "Listeners",
+      "description": "Register Game state change listener hook",
+      "funcName": "OnGameStateChanged_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameStateChangedCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameStateChanged_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Game state change listener hook",
+      "funcName": "OnGameStateChanged_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameStateChangedCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityAcceptInput_Register",
+      "group": "Listeners",
+      "description": "Register Entity AcceptInput listener hook",
+      "funcName": "OnEntityAcceptInput_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityIOCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityAcceptInput_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity AcceptInput listener hook",
+      "funcName": "OnEntityAcceptInput_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityIOCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnNpcSelectSchedule_Register",
+      "group": "Listeners",
+      "description": "Register NPC schedule selection listener hook",
+      "funcName": "OnNpcSelectSchedule_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "NpcSelectScheduleCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnNpcSelectSchedule_Unregister",
+      "group": "Listeners",
+      "description": "Unregister NPC schedule selection listener hook",
+      "funcName": "OnNpcSelectSchedule_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "NpcSelectScheduleCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityFireOutput_Register",
+      "group": "Listeners",
+      "description": "Register Entity FireOutput listener hook",
+      "funcName": "OnEntityFireOutput_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityOutputCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnEntityFireOutput_Unregister",
+      "group": "Listeners",
+      "description": "Unregister Entity FireOutput listener hook",
+      "funcName": "OnEntityFireOutput_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "EntityOutputCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnProcessUsercmds_Register",
+      "group": "Listeners",
+      "description": "Register CBasePlayerController::ProcessUsercmds listener hook",
+      "funcName": "OnProcessUsercmds_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ProcessUsercmdsCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnProcessUsercmds_Unregister",
+      "group": "Listeners",
+      "description": "Unregister CBasePlayerController::ProcessUsercmds listener hook",
+      "funcName": "OnProcessUsercmds_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "ProcessUsercmdsCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnAbilityThink_Register",
+      "group": "Listeners",
+      "description": "Register CCitadelPlayerPawn::AbilityThink listener hook",
+      "funcName": "OnAbilityThink_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "AbilityThinkCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnAbilityThink_Unregister",
+      "group": "Listeners",
+      "description": "Unregister CCitadelPlayerPawn::AbilityThink listener hook",
+      "funcName": "OnAbilityThink_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "AbilityThinkCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnAddModifier_Register",
+      "group": "Listeners",
+      "description": "Register CModifierProperty::AddModifier listener hook",
+      "funcName": "OnAddModifier_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "AddModifierCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnAddModifier_Unregister",
+      "group": "Listeners",
+      "description": "Unregister CModifierProperty::AddModifier listener hook",
+      "funcName": "OnAddModifier_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "AddModifierCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnHeroInitialized_Register",
+      "group": "Listeners",
+      "description": "Register CCitadelPlayerPawn::InitializeHeroOnPawn listener hook",
+      "funcName": "OnHeroInitialized_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "HeroInitializedCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnHeroInitialized_Unregister",
+      "group": "Listeners",
+      "description": "Unregister CCitadelPlayerPawn::InitializeHeroOnPawn listener hook",
+      "funcName": "OnHeroInitialized_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "HeroInitializedCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameEvent_Register",
+      "group": "Listeners",
+      "description": "Register game event listener hook (e.g. player_death, player_respawned)",
+      "funcName": "OnGameEvent_Register",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameEventCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "OnGameEvent_Unregister",
+      "group": "Listeners",
+      "description": "Unregister game event listener hook",
+      "funcName": "OnGameEvent_Unregister",
+      "paramTypes": [
+        {
+          "name": "callback",
+          "type": "function",
+          "prototype": "GameEventCallback"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "HudAnnounce",
+      "group": "Chat",
+      "description": "Display a HUD game announcement banner to a player",
+      "funcName": "HudAnnounce",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        },
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "duration",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    },
+    {
+      "name": "HudAnnounceAll",
+      "group": "Chat",
+      "description": "Display a HUD game announcement banner to all players",
+      "funcName": "HudAnnounceAll",
+      "paramTypes": [
+        {
+          "name": "title",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "duration",
+          "type": "float"
+        }
+      ],
+      "retType": {
+        "type": "void"
+      }
+    }
+  ]
+}

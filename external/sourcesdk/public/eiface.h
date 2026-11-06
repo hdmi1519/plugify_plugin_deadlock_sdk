@@ -1,0 +1,861 @@
+//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//
+// Purpose:
+//
+// $NoKeywords: $
+//
+//===========================================================================//
+
+#ifndef EIFACE_H
+#define EIFACE_H
+
+#ifdef _WIN32
+#pragma once
+#endif
+
+#include "tier1/convar.h"
+#include "icvar.h"
+#include "edict.h"
+#include "mathlib/vplane.h"
+#include "soundflags.h"
+#include "bitvec.h"
+#include "tier1/bitbuf.h"
+#include "tier1/utlmap.h"
+#include "tier0/utlstring.h"
+#include "tier0/bufferstring.h"
+#include "entity2/entityidentity.h"
+#include <steam/steamclientpublic.h>
+#include "playerslot.h"
+#include "playeruserid.h"
+#include <iloopmode.h>
+#include "networkbasetypes.pb.h"
+#include "network_connection.pb.h"
+
+//-----------------------------------------------------------------------------
+// forward declarations
+//-----------------------------------------------------------------------------
+class	ServerClass;
+class	CGameTrace;
+typedef	CGameTrace trace_t;
+struct	typedescription_t;
+class	CSaveRestoreData;
+struct	datamap_t;
+struct	studiohdr_t;
+class	CBaseEntity;
+class	CRestore;
+class	CSave;
+struct	vcollide_t;
+class	IRecipientFilter;
+class	CBaseEntity;
+class	ITraceFilter;
+class	INetChannelInfo;
+class	ISpatialPartition;
+class IScratchPad3D;
+class CStandardSendProxies;
+class IAchievementMgr;
+class CGamestatsData;
+class CSteamID;
+class ISPSharedMemory;
+class CGamestatsData;
+class CEngineHltvInfo_t;
+class INetworkStringTable;
+class CResourceManifestPrerequisite;
+class CEntityLump;
+class IPVS;
+class IHLTVDirector;
+struct SpawnGroupDesc_t;
+class IClassnameForMapClassCallback;
+struct Entity2Networkable_t;
+class CCreateGameServerLoadInfo;
+enum SaveFileLevelsType_t : int;
+struct SaveGameParams_t;
+enum SaveGameResult_t : int;
+class KeyValues3;
+class INavListener;
+class CNavData;
+struct EconItemInfo_t;
+struct EconControlPointInfo_t;
+class CEntityHandle;
+struct RenderDeviceInfo_t;
+struct ns_address;
+
+enum RenderMultisampleType_t : uint8
+{
+	RENDER_MULTISAMPLE_INVALID = 0xFF,
+	RENDER_MULTISAMPLE_NONE = 0,
+	RENDER_MULTISAMPLE_2X,
+	RENDER_MULTISAMPLE_4X,
+	RENDER_MULTISAMPLE_6X,
+	RENDER_MULTISAMPLE_8X,
+	RENDER_MULTISAMPLE_16X,
+	RENDER_MULTISAMPLE_TYPE_COUNT
+};
+
+class GameSessionConfiguration_t;
+struct StringTableDef_t;
+class ILoopModePrerequisiteRegistry;
+struct URLArgument_t;
+struct vis_info_t;
+class IHLTVServer;
+class CCompressedResourceManifest;
+class ILoadingSpawnGroup;
+class IToolGameSimulationAPI;
+class CCLCMsg_Move_t;
+class CCLCMsg_SplitPlayerConnect_t;
+class CNetMessage;
+class INetworkMessageInternal;
+struct Entity2Networkable_t;
+class IDemoFile;
+
+namespace google
+{
+	namespace protobuf
+	{
+		class Message;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// defines
+//-----------------------------------------------------------------------------
+
+#ifdef _WIN32
+#define DLLEXPORT __stdcall
+#else
+#define DLLEXPORT /* */
+#endif
+
+#define INTERFACEVERSION_VENGINESERVER	"Source2EngineToServer001"
+
+struct bbox_t
+{
+	Vector mins;
+	Vector maxs;
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Interface the engine exposes to the game DLL and client DLL
+//-----------------------------------------------------------------------------
+abstract_class ISource2Engine : public IAppSystem
+{
+public:
+	// Is the game paused?
+	virtual bool		IsPaused() = 0;
+
+	// What is the game timescale multiplied with the host_timescale?
+	virtual float		GetTimescale( void ) const = 0;
+
+	virtual void		*FindOrCreateWorldSession( const char *pszWorldName, CResourceManifestPrerequisite * ) = 0;
+
+	virtual CEntityLump	*GetEntityLumpForTemplate( const char *, bool, const char *, const char * ) = 0;
+
+	virtual uint32		GetStatsAppID() const = 0;
+
+	virtual void		*UnknownFunc1(const char *pszFilename, void *pUnknown1, void *pUnknown2, void *pUnknown3) = 0;
+	virtual void		UnknownFunc2() = 0;
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Interface the engine exposes to the game DLL
+//-----------------------------------------------------------------------------
+abstract_class IVEngineServer2 : public ISource2Engine
+{
+public:
+	virtual EUniverse	GetSteamUniverse() const = 0;
+
+	virtual SpawnGroupHandle_t	GetSpawnGroupHandle( const char *pszName ) = 0;
+	virtual const char			*GetSpawnGroupName( SpawnGroupHandle_t nHandle ) = 0;
+	virtual SpawnGroupHandle_t	unk_21( bool ) = 0;
+	virtual SpawnGroupHandle_t	unk_22( bool ) = 0; // Returns the active/last spawn-group handle, or the invalid sentinel
+	virtual bool				IsSpawnGroupHandleValid( SpawnGroupHandle_t nHandle ) = 0;
+	virtual float				&GetFrameTime() = 0;
+
+	virtual void		SetFrameTimeAmnesty( const char *amnesty, int, float frametime ) = 0;
+	virtual const char *GetFrameTimeAmnesty( bool check_cvar ) = 0;
+
+	virtual void		unk027( const char *amnesty, int, float frametime ) = 0; // frame-time amnesty dict insert
+
+	virtual void		ShowFrameTimeReport( void *, bool, uint32 ) = 0;
+	virtual void		DumpNetStats( void *pNetStatData, const std::function< void ( const char * )> &func ) = 0;
+	virtual void		unk_30() = 0;
+
+	virtual uint32		GetLongFrameCount() = 0;
+
+	// Tell engine to change level ( "changelevel s1\n" or "changelevel2 s1 s2\n" )
+	virtual void		ChangeLevel( const char *s1, const char *s2 ) = 0;
+
+	// Ask engine whether the specified map is a valid map file (exists and has valid version number).
+	virtual int			IsMapValid( const char *filename ) = 0;
+
+	// Is this a dedicated server?
+	virtual bool		IsDedicatedServer( void ) = 0;
+
+	// Is this an HLTV relay?
+	virtual bool		IsHLTVRelay( void ) = 0;
+
+	// Is server only accepting local connections?
+	virtual bool		IsServerLocalOnly( void ) = 0;
+
+	virtual int			PrecacheGeneric( const char *s, bool preload = false ) = 0;
+	virtual bool		IsGenericPrecached( char const *s ) const = 0;
+
+	// Returns the server assigned userid for this player.  Useful for logging frags, etc.
+	//  returns -1 if the edict couldn't be found in the list of players.
+	virtual CPlayerUserId GetPlayerUserId( CPlayerSlot nSlot ) = 0;
+	virtual const char	*GetPlayerNetworkIDString( CPlayerSlot nSlot ) = 0;
+	// Get stats info interface for a client netchannel
+	virtual INetChannelInfo* GetPlayerNetInfo( CPlayerSlot nSlot ) = 0;
+
+	virtual bool		IsUserIDInUse( int userID ) = 0;	// TERROR: used for transitioning
+	virtual int			GetLoadingProgressForUserID( int userID ) = 0;	// TERROR: used for transitioning
+
+	// Given the current PVS(or PAS) and origin, determine which players should hear/receive the message
+	virtual void		Message_DetermineMulticastRecipients( bool usepas, const Vector& origin, CPlayerBitVec& playerbits ) = 0;
+
+	// Issue a command to the command parser as if it was typed at the server console.
+	virtual void		ServerCommand( const char *str ) = 0;
+	// Issue the specified command to the specified client (mimics that client typing the command at the console).
+	virtual void		ClientCommand( CPlayerSlot nSlot, const char *szFmt, ... ) FMTFUNCTION( 3, 4 ) = 0;
+
+	// Print szMsg to the client console.
+	virtual void		ClientPrintf( CPlayerSlot nSlot, const char *szMsg ) = 0;
+
+	virtual bool		IsLowViolence() = 0;
+	virtual bool		SetHLTVChatBan( int tvslot, bool bBanned ) = 0;
+	virtual bool		IsAnyClientLowViolence() = 0;
+
+	// Get the current game directory (hl2, tf2, hl1, cstrike, etc.)
+	virtual void        GetGameDir( CBufferString &gameDir ) = 0;
+
+	// Create a bot with the given name.  Player index is -1 if fake client can't be created
+	virtual CPlayerSlot	CreateFakeClient( const char *netname ) = 0;
+
+	// Get a convar keyvalue for s specified client
+	virtual const char	*GetClientConVarValue( CPlayerSlot nSlot, const char *name ) = 0;
+
+	// Print a message to the server log file
+	virtual void		LogPrint( const char *msg ) = 0;
+	virtual bool		IsLogEnabled() = 0;
+
+	virtual bool IsSplitScreenPlayer( CPlayerSlot nSlot ) = 0;
+	virtual edict_t *GetSplitScreenPlayerAttachToEdict( CPlayerSlot nSlot ) = 0;
+	virtual edict_t *GetSplitScreenPlayerForEdict( CPlayerSlot nSlot, int nSplitScreenSlot ) = 0;
+
+	// Ret types might be all wrong for these. Haven't researched yet.
+	virtual void	UnloadSpawnGroup( SpawnGroupHandle_t spawnGroup, /*ESpawnGroupUnloadOption*/ int) = 0;
+	virtual void	SetSpawnGroupDescription( SpawnGroupHandle_t spawnGroup, const char *pszDescription ) = 0;
+	virtual bool	IsSpawnGroupLoaded( SpawnGroupHandle_t spawnGroup ) const = 0;
+	virtual bool	IsSpawnGroupLoading( SpawnGroupHandle_t spawnGroup ) const = 0;
+	virtual void	MakeSpawnGroupActive( SpawnGroupHandle_t spawnGroup ) = 0;
+	virtual void	SynchronouslySpawnGroup( SpawnGroupHandle_t spawnGroup ) = 0;
+	// Deadlock: not in upstream
+	virtual bool	IsSpawnGroupLoadedOnClient( CPlayerSlot nSlot, SpawnGroupHandle_t spawnGroup ) const = 0;
+	virtual void	SynchronizeAndBlockUntilLoaded( SpawnGroupHandle_t spawnGroup ) = 0;
+
+	virtual void	unk_066( SpawnGroupHandle_t spawnGroup ) = 0;
+
+	virtual void SetTimescale( float flTimescale ) = 0;
+
+	virtual uint32		GetAppID() = 0;
+
+	// Returns the SteamID of the specified player. It'll be NULL if the player hasn't authenticated yet.
+	virtual const CSteamID	*GetClientSteamID( CPlayerSlot nSlot ) = 0;
+
+	// Methods to set/get a gamestats data container so client & server running in same process can send combined data
+	virtual void SetGamestatsData( CGamestatsData *pGamestatsData ) = 0;
+	virtual CGamestatsData *GetGamestatsData() = 0;
+
+	// Send a client command keyvalues
+	// keyvalues are deleted inside the function
+	virtual void ClientCommandKeyValues( CPlayerSlot nSlot, KeyValues *pCommand ) = 0;
+
+	// This makes the host run 1 tick per frame instead of checking the system timer to see how many ticks to run in a certain frame.
+	// i.e. it does the same thing timedemo does.
+	virtual void SetDedicatedServerBenchmarkMode( bool bBenchmarkMode ) = 0;
+
+	// Returns true if this client has been fully authenticated by Steam
+	virtual bool IsClientFullyAuthenticated( CPlayerSlot nSlot ) = 0;
+
+	virtual CGlobalVars	*GetServerGlobals() = 0;
+
+	// Sets a USERINFO client ConVar for a fakeclient
+	virtual void		SetFakeClientConVarValue( CPlayerSlot nSlot, const char *cvar, const char *value ) = 0;
+
+	virtual CSharedEdictChangeInfo* GetSharedEdictChangeInfo() = 0;
+
+	virtual void SetAchievementMgr( IAchievementMgr *pAchievementMgr ) =0;
+	virtual IAchievementMgr *GetAchievementMgr() = 0;
+
+	// Fill in the player info structure for the specified player index (name, model, etc.)
+	virtual bool GetPlayerInfo( CPlayerSlot nSlot, google::protobuf::Message &info ) = 0;
+
+	// Returns the XUID of the specified player. It'll be NULL if the player hasn't connected yet.
+	virtual uint64 GetClientXUID( CPlayerSlot nSlot ) = 0;
+
+	virtual void				*GetPVSForSpawnGroup( SpawnGroupHandle_t spawnGroup ) = 0;
+	virtual SpawnGroupHandle_t	FindSpawnGroupByName( const char *szName ) = 0;
+
+	// Returns the SteamID of the game server
+	virtual CSteamID	GetGameServerSteamID() = 0;
+
+	virtual int GetBuildVersion( void ) const = 0;
+
+	virtual bool IsClientLowViolence( CPlayerSlot nSlot ) = 0;
+
+	// Kicks the slot with the specified NetworkDisconnectionReason
+	virtual void DisconnectClient( CPlayerSlot nSlot, ENetworkDisconnectionReason reason, const char *szInternalReason = nullptr ) = 0;
+	virtual int64 DisconnectAllClients( ENetworkDisconnectionReason reason ) = 0;
+
+	virtual void ProcessSplitPlayerConnect( const CCLCMsg_SplitPlayerConnect_t &msg ) = 0; // By host client.
+
+	// Use these to setup who can hear whose voice.
+	// Pass in client indices (which are their ent indices - 1).
+	virtual bool GetClientListening( CPlayerSlot iReceiver, CPlayerSlot iSender ) = 0;
+	virtual bool SetClientListening( CPlayerSlot iReceiver, CPlayerSlot iSender, bool bListen ) = 0;
+	virtual bool SetClientProximity( CPlayerSlot iReceiver, CPlayerSlot iSender, bool bUseProximity ) = 0;
+
+	virtual CPlayerSlot CreateClient( CPlayerSlot nRequestSlot, CSteamID nSteamID, const char *pszName ) = 0;
+	virtual void SetClientConnect( CPlayerSlot nSlot, bool b = true ) = 0;
+	virtual SignonState_t GetClientSignonState( CPlayerSlot nSlot ) = 0;
+	virtual void KickClient( CPlayerSlot nSlot, const char *szInternalReason, ENetworkDisconnectionReason reason ) = 0;
+	virtual void BanClient( CPlayerSlot nSlot, float flDuration, bool bKick ) = 0;
+	virtual void BanClient( CSteamID steamId, float flDuration, bool bKick ) = 0;
+
+	virtual int64 StartHltvReplay( CPlayerSlot nSlot, void *pRequest ) = 0;
+	virtual int64 ForceStopHltvReplay( CPlayerSlot nSlot ) = 0;
+	virtual int64 StopAllHltvReplays() = 0;
+	virtual uint32 GetHltvLastSendTick( CPlayerSlot nSlot ) = 0;
+	virtual bool IsHltvReplayBufferAvailable() = 0;
+	virtual bool CanStartHltvReplay( CPlayerSlot nSlot, uint32 nDelay ) = 0;
+	virtual int64 ResetHltvReplayRequestTime( CPlayerSlot nSlot ) = 0;
+
+	virtual bool	IsAnyHltvReplayActive() = 0;
+
+	virtual void SetClientUpdateRate( CPlayerSlot nSlot, float flUpdateRate ) = 0;
+	virtual void UpdateClientRate( CPlayerSlot nSlot ) = 0;
+
+	virtual uint64 RemoveHltvReplayRequest( float flDelay, void *pUnk, int nRequestId ) = 0;
+	virtual void *AddHltvReplayRequest( uint32, int, uint32, int, int ) = 0;
+	virtual bool IsHltvReplayEnabled() = 0;
+	virtual uint64 QueueHltvReplayEvent( int, uint8, uint8 ) = 0;
+	virtual bool IsHltvReplayActive() = 0;
+	virtual void RecordNetworkSpike() = 0;
+	virtual void RecordDemo( const char *pszFilename ) = 0;
+	virtual void StopRecordingDemo( void *pUnk ) = 0;
+
+	virtual bool BroadcastEvent( INetworkMessageInternal *pSerializer, const CNetMessage *pMessage ) = 0;
+	virtual const char *GetHltvReplayStats() = 0;
+	virtual const char *GetName() = 0;
+
+	virtual CCommand *GetClientCommand( CPlayerSlot nSlot ) = 0;
+
+	virtual void	*unk_121() = 0;
+};
+
+//-----------------------------------------------------------------------------
+// Purpose: Interface the engine exposes to the client DLL (Source2EngineToClient001).
+// Backed by CEngineClient in engine2.dll; own methods occupy vtable slots 18-184.
+// Unnamed slots (unkNNN) are not yet reversed for this build.
+//-----------------------------------------------------------------------------
+abstract_class IVEngineClient2 : public ISource2Engine
+{
+public:
+	virtual EUniverse GetSteamUniverse() const = 0;
+	virtual int &GetPlayerSlotByNetworkIDString(int &nSlot, const char *pszNetworkID) = 0;
+	virtual const char *GetPlayerNetworkIDString(int nSlot) = 0;
+	virtual int &GetLocalPlayer(int &nSlot, bool bUnk = false) = 0;
+	virtual int &GetLastValidPlayerSlot(int &nSlot, bool bUnk = false) = 0;
+	virtual bool IsPlayerSlotActive(int nSlot) = 0;
+	virtual float &GetFrameTime() = 0;
+	virtual void SetFrameTimeAmnesty(const char *pszReason, int nFrames, float flDuration) = 0;
+	virtual const char *GetFrameTimeAmnesty(bool bCheckCvar) = 0;
+	virtual void *unk027() = 0;
+	virtual void PrintVProfLiteReport(void *pReport, bool bDetailed, int nLogChannel) = 0;
+	virtual void DumpNetStats(void *pNetStatData, void (*pfnOutput)(const char *)) = 0;
+	virtual void *GetNetChannelInfo() = 0;
+	virtual uint32 GetLongFrameCount() = 0;
+	virtual bool GetPlayerInfo(int nPlayerIndex, void *pInfo) = 0;
+	virtual unsigned short &GetPlayerUserId(unsigned short &userid, int nPlayerIndex) = 0;
+	virtual int &GetSplitScreenPlayer(int &nPlayerSlot, int nSplitScreenSlot) = 0;
+	virtual int &GetSplitScreenSlotForPlayer(int &nSplitScreenSlot, int nPlayerSlot) = 0;
+	virtual float GetLastTimeStamp() = 0;
+	virtual int GetLastServerTick() = 0;
+	virtual int GetMaxClients() = 0;
+	virtual bool IsInGame() = 0;
+	virtual bool IsConnected() = 0;
+	virtual void *GetNetChannel(int nSplitScreenSlot) = 0;
+	virtual bool IsPlayingDemo() = 0;
+	virtual int GetDemoPlaybackTick() = 0;
+	virtual bool IsRecordingDemo() = 0;
+	virtual bool IsPlayingTimeDemo() = 0;
+	virtual void *unk046() = 0;
+	virtual void *unk047() = 0;
+	virtual void *unk048() = 0;
+	virtual void *unk049() = 0;
+	virtual void *unk050() = 0;
+	virtual void ClientCommand(int iCommandSrc, const char *pszCommand, bool bUnrestricted, void *pUnk0 = nullptr, void *pUnk1 = nullptr) = 0;
+	virtual void *unk052() = 0;
+	virtual void *unk053() = 0;
+	virtual void *unk054() = 0;
+	virtual bool IsSplitScreenActive() = 0;
+	virtual bool IsValidSplitScreenSlot(int nSplitScreenSlot) = 0;
+	virtual int &FirstValidSplitScreenSlot(int &nSplitScreenSlot) = 0;
+	virtual int &NextValidSplitScreenSlot(int &nSplitScreenSlot, int nPreviousSlot) = 0;
+	virtual void *unk059() = 0;
+	virtual void *unk060() = 0;
+	virtual void *unk061() = 0;
+	virtual void *unk062() = 0;
+	virtual void OnEngineLevelLoadingFinished() = 0;
+	virtual const char *GetLevelName() = 0;
+	virtual const char *GetLevelNameShort() = 0;
+	virtual void *unk066() = 0;
+	virtual void *GetBroadcastRecorder() = 0;
+	virtual void *unk068() = 0;
+	virtual void *unk069() = 0;
+	virtual void *unk070() = 0;
+	virtual void *unk071() = 0;
+	virtual void *unk072() = 0;
+	virtual void *unk073() = 0;
+	virtual void *unk074() = 0;
+	virtual void *unk075() = 0;
+	virtual void *unk076() = 0;
+	virtual void *unk077() = 0;
+	virtual void *unk078() = 0;
+	virtual void *unk079() = 0;
+	virtual void *unk080() = 0;
+	virtual void *unk081() = 0;
+	virtual void *unk082() = 0;
+	virtual void *unk083() = 0;
+	virtual void *unk084() = 0;
+	virtual void *unk085() = 0;
+	virtual void *unk086() = 0;
+	virtual void *unk087() = 0;
+	virtual void *unk088() = 0;
+	virtual void *unk089() = 0;
+	virtual void *unk090() = 0;
+	virtual void *unk091() = 0;
+	virtual void *unk092() = 0;
+	virtual void *unk093() = 0;
+	virtual void *unk094() = 0;
+	virtual void *unk095() = 0;
+	virtual void *unk096() = 0;
+	virtual void *unk097() = 0;
+	virtual void *unk098() = 0;
+	virtual void *unk099() = 0;
+	virtual void *unk100() = 0;
+	virtual void *unk101() = 0;
+	virtual int RegisterDemoCustomDataCallback(const char *pszName, void *pfnCallback) = 0;
+	virtual void RecordDemoCustomData(int nCallbackID, const void *pData, int nSize) = 0;
+	virtual void *unk104() = 0;
+	virtual void *unk105() = 0;
+	virtual void *unk106() = 0;
+	virtual void *unk107() = 0;
+	virtual void *unk108() = 0;
+	virtual void *unk109() = 0;
+	virtual void *unk110() = 0;
+	virtual void *unk111() = 0;
+	virtual void *unk112() = 0;
+	virtual void *unk113() = 0;
+	virtual void *unk114() = 0;
+	virtual void *unk115() = 0;
+	virtual void *unk116() = 0;
+	virtual void *unk117() = 0;
+	virtual void *unk118() = 0;
+	virtual void *unk119() = 0;
+	virtual void *unk120() = 0;
+	virtual void *unk121() = 0;
+	virtual void *unk122() = 0;
+	virtual void *unk123() = 0;
+	virtual void *unk124() = 0;
+	virtual void *unk125() = 0;
+	virtual void *unk126() = 0;
+	virtual void *unk127() = 0;
+	virtual void *unk128() = 0;
+	virtual int SOSSetOpvarFloat(const char *pszStackName, const char *pszOpvarName, float flValue) = 0;
+	virtual int SOSGetOpvarFloat(const char *pszStackName, const char *pszOpvarName, float *pflOut) = 0;
+	virtual void *unk131() = 0;
+	virtual void *unk132() = 0;
+	virtual void *unk133() = 0;
+	virtual void *unk134() = 0;
+	virtual void *unk135() = 0;
+	virtual void *unk136() = 0;
+	virtual void *unk137() = 0;
+	virtual void *unk138() = 0;
+	virtual void *unk139() = 0;
+	virtual void *unk140() = 0;
+	virtual void *unk141() = 0;
+	virtual void *unk142() = 0;
+	virtual void *unk143() = 0;
+	virtual void *unk144() = 0;
+	virtual void *unk145() = 0;
+	virtual void *unk146() = 0;
+	virtual void *unk147() = 0;
+	virtual void *unk148() = 0;
+	virtual const char *GetDefaultRenderSystemOption() = 0;
+	virtual void SetDefaultRenderSystemOption(const char *pszOption) = 0;
+	virtual uint64 GetRenderSystemOptionFlags() = 0;
+	virtual void SetRenderSystemOptionFlags(uint64 nValue, uint64 nMask) = 0;
+	virtual bool IsRenderSystemOptionRecommendationStale() = 0;
+	virtual void MarkRenderSystemOptionRecommended() = 0;
+	virtual void *unk155() = 0;
+	virtual void *unk156() = 0;
+	virtual void *unk157() = 0;
+	virtual void RunPanoramaAnimUpdate() = 0;
+	virtual void *unk159() = 0;
+	virtual void *unk160() = 0;
+	virtual void *unk161() = 0;
+	virtual void *unk162() = 0;
+	virtual void *unk163() = 0;
+	virtual void *unk164() = 0;
+	virtual void *unk165() = 0;
+	virtual void WriteMinidumpSystemInfo(void *pBuffer) = 0;
+	virtual bool GetLowViolence() = 0;
+	virtual void SetLowViolence(int nValue) = 0;
+	virtual void *unk169() = 0;
+	virtual void *unk170() = 0;
+	virtual void *unk171() = 0;
+	virtual void *unk172() = 0;
+	virtual void *unk173() = 0;
+	virtual void *unk174() = 0;
+	virtual void *unk175() = 0;
+	virtual void *unk176() = 0;
+	virtual void *unk177() = 0;
+	virtual void *unk178() = 0;
+	virtual void *unk179() = 0;
+	virtual void *unk180() = 0;
+	virtual int GetGlobalThreadPoolMode() = 0;
+	virtual const char *GetThreadPoolModeName(int nMode) = 0;
+	virtual void SetGlobalThreadPoolMode(int nMode) = 0;
+	virtual void *unk184() = 0;
+};
+
+abstract_class IServerGCLobby
+{
+public:
+	virtual bool HasLobby() const = 0;
+	virtual bool SteamIDAllowedToConnect( const CSteamID &steamId ) const = 0;
+	virtual void UpdateServerDetails( void ) = 0;
+	virtual bool ShouldHibernate() = 0;
+	virtual bool SteamIDAllowedToP2PConnect( const CSteamID &steamId ) const = 0;
+	virtual bool LobbyAllowsCheats( void ) const = 0;
+};
+
+#define INTERFACEVERSION_SERVERGAMEDLL				"Source2Server001"
+
+//-----------------------------------------------------------------------------
+// Purpose: These are the interfaces that the game .dll exposes to the engine
+//-----------------------------------------------------------------------------
+abstract_class ISource2Server : public IAppSystem
+{
+public:
+	virtual bool			unk_001() const = 0;
+
+	virtual void			SetGlobals( CGlobalVars *pGlobals ) = 0;
+
+	// Let the game .dll allocate it's own network/shared string tables
+	virtual void			GameCreateNetworkStringTables( void ) = 0;
+
+	virtual void			WriteSignonMessages( const bf_write &buf ) = 0;
+
+	virtual void			PreWorldUpdate( bool simulating ) = 0;
+
+	// Deadlock: returns pointer, not reference
+	virtual CUtlMap< int, Entity2Networkable_t >	*GetEntity2Networkables( void ) const = 0;
+
+	// Deadlock: replaces GetEntity2Networkable( CEntityIndex, Entity2Networkable_t * )
+	virtual void			*GetEntityInfo() = 0;
+
+	// Called to apply lobby settings to a dedicated server
+	virtual void			ApplyGameSettings( KeyValues *pKV ) = 0;
+
+	// The server should run physics/think on all edicts
+	// One of these bools is 'simulating'... probably
+	virtual void			GameFrame( bool simulating, bool bFirstTick, bool bLastTick ) = 0;
+
+	// Returns true if the game DLL wants the server not to be made public.
+	// Used by commentary system to hide multiplayer commentary servers from the master.
+	virtual bool			ShouldHideFromMasterServer( bool bServerHasPassword ) = 0;
+
+	virtual void			GetMatchmakingTags( char *buf, size_t bufSize ) = 0;
+
+	virtual void			ServerHibernationUpdate( bool bHibernating ) = 0;
+
+	virtual IServerGCLobby	*GetServerGCLobby() = 0;
+
+	virtual void			GetMatchmakingGameData( CBufferString &buf ) = 0;
+
+	// return true to disconnect client due to timeout (used to do stricter timeouts when the game is sure the client isn't loading a map)
+	virtual bool			ShouldTimeoutClient( int nUserID, float flTimeSinceLastReceived ) = 0;
+
+	virtual void			PrintStatus( CEntityIndex nPlayerEntityIndex, CBufferString &output ) = 0;
+
+	virtual int				GetServerGameDLLFlags( void ) const = 0;
+
+	// Get the list of cvars that require tags to show differently in the server browser
+	virtual void			GetTaggedConVarList( KeyValues *pCvarTagList ) = 0;
+
+	// Give the list of datatable classes to the engine.  The engine matches class names from here with
+	//  edict_t::classname to figure out how to encode a class's data for networking
+	virtual CUtlVector<ServerClass*> *GetAllServerClasses( void ) = 0;
+
+	virtual const char		*GetActiveWorldName( void ) const = 0;
+
+	virtual bool			IsPaused( void ) const = 0;
+
+	virtual bool			GetNavMeshData( CNavData *pNavMeshData ) = 0;
+	virtual void			SetNavMeshData( const CNavData *navMeshData ) = 0;
+	virtual void			RegisterNavListener( INavListener *pNavListener ) = 0;
+	virtual void			UnregisterNavListener( INavListener *pNavListener ) = 0;
+	virtual void			*GetSpawnDebugInterface( void ) = 0;
+
+	virtual IToolGameSimulationAPI *GetToolGameSimulationAPI( void ) = 0;
+	virtual void			GetAnimationActivityList( CUtlVector<CUtlString> &activityList ) = 0;
+	virtual void			GetAnimationEventList( CUtlVector<CUtlString> &eventList ) = 0;
+	virtual void			FilterPlayerCounts( int *pInOutHumans, int *pInOutHumansSlots, int *pInOutBots ) = 0;
+
+	// Called after the steam API has been activated post-level startup
+	virtual void			GameServerSteamAPIActivated( void ) = 0;
+
+	virtual void			GameServerSteamAPIDeactivated( void ) = 0;
+
+	virtual void			OnHostNameChanged( const char *pHostname ) = 0;
+	virtual void			PreFatalShutdown( void ) const = 0;
+	virtual void			UpdateWhenNotInGame( float flFrameTime ) = 0;
+
+	virtual void			*GetEconItemSystem( void ) = 0;
+
+	virtual void			ServerConVarChanged( const char *pVarName, const char *pValue ) = 0;
+
+	// Returns a list of values and names corresponding to HitGroup_t enum
+	virtual void			GetHitGroupEnumInfo( CUtlVector<int> &values, CUtlVector<CUtlString> &names ) = 0;
+
+	virtual void			WriteStartupTelemetry( KeyValues3 *pKV ) = 0;
+
+	virtual bool			SaveGame_CalcFileName( const char *pName, CUtlString &output ) const = 0;
+	virtual bool			GetLevelNameFromSaveFile( const char *pSaveGame, CUtlString &levelName ) = 0;
+	// Deadlock: not in upstream
+	virtual bool			unk_052( void ) = 0;
+	virtual void			GetLevelsFromSaveFile( const char *pSaveGame, CUtlVector<CCreateGameServerLoadInfo> &list, bool bWipeDirectoryAndExtract, SaveFileLevelsType_t saveFileLevelsType, CUtlString *pOutHeaderString ) = 0;
+	virtual void			ClearSaveDirectory( void ) = 0;
+	virtual void			PreSaveGameLoaded( const char *pSaveName ) = 0;
+	virtual void			AppendSaveGameResources( CCompressedResourceManifest *pCompressedManifestOut, ILoadingSpawnGroup *pLoadingSpawnGroup, SpawnGroupHandle_t hSpawnGroup, const void *pLoadDesc ) const = 0;
+	virtual void			AppendTransitionResources( CCompressedResourceManifest *pCompressedManifestOut, ILoadingSpawnGroup *pLoadingSpawnGroup, SpawnGroupHandle_t hSpawnGroup, const void *pLoadDesc ) const = 0;
+	virtual SaveGameResult_t SaveGame( const SaveGameParams_t &params ) = 0;
+	virtual bool			IsAsyncSaveInProgress( void ) = 0;
+	virtual bool			ProcessPendingSaveRequest( void ) = 0;
+	virtual bool			HasPendingSaveRequest( void ) = 0;
+	virtual void			FinishAsyncSave( void ) = 0;
+
+	virtual const char		*GetEntityUniqueHammerID( CEntityIndex nEntityIndex ) = 0;
+
+	// Deadlock: CSource2Server has 39 more slots here; they do not line up with upstream's.
+};
+
+//-----------------------------------------------------------------------------
+// Just an interface version name for the random number interface
+// See tier1/random.h for the interface definition
+// NOTE: If you change this, also change VENGINE_CLIENT_RANDOM_INTERFACE_VERSION in cdll_int.h
+//-----------------------------------------------------------------------------
+#define VENGINE_SERVER_RANDOM_INTERFACE_VERSION	"VEngineRandom001"
+
+#define INTERFACEVERSION_SERVERGAMEENTS			"Source2GameEntities001"
+//-----------------------------------------------------------------------------
+// Purpose: Interface to get at server entities
+//-----------------------------------------------------------------------------
+abstract_class ISource2GameEntities : public IAppSystem
+{
+public:
+	virtual					~ISource2GameEntities()	{}
+
+	// This sets a bit in pInfo for each edict in the list that wants to be transmitted to the
+	// client specified in pInfo.
+	//
+	// This is also where an entity can force other entities to be transmitted if it refers to them
+	// with ehandles.
+	virtual void			CheckTransmit( CCheckTransmitInfo **pInfoInfoList, int nInfoCount, CBitVec<16384> &unionTransmitEdicts, CBitVec<16384> &,
+								const Entity2Networkable_t **pNetworkables, const uint16 *pEntityIndicies, int nEntityIndices ) = 0;
+	
+	// TERROR: Perform any PVS cleanup before a full update
+	virtual void			PrepareForFullUpdate( CEntityIndex nPlayerEntityIndex ) = 0;
+	
+	virtual bool			ShouldClientReceiveStringTableUserData( const INetworkStringTable *pTable, int stringNumber, const CCheckTransmitInfo *pInfo ) = 0;
+
+	virtual void			ResetChangeAccessorsSerialNumbersToZero() = 0;
+
+	virtual bool			GetWorldspaceCenter( CEntityIndex nEntityIndex, Vector *pCenter ) const = 0;
+
+	// See entity2/entitynetwork.h
+	virtual void			PrePackEntities( const CUtlVector< Entity2Networkable_t * > &vecEntities ) = 0;
+};
+
+#define INTERFACEVERSION_SERVERCONFIG			"Source2ServerConfig001"
+
+abstract_class ISource2ServerConfig : public IAppSystem
+{
+public:
+	// Returns string describing current .dll.  e.g., TeamFortress 2, Half-Life 2.
+	//  Hey, it's more descriptive than just the name of the game directory
+	virtual const char *GetGameDescription( void ) = 0;
+
+	virtual int			GetNetworkVersion( void ) = 0;
+
+	// Get the simulation interval (must be compiled with identical values into both client and game .dll for MOD!!!)
+	// Right now this is only requested at server startup time so it can't be changed on the fly, etc.
+	// Deadlock: not in upstream
+	virtual float			GetTickInterval( void ) const = 0;
+
+	// Get server maxplayers and lower bound for same
+	virtual void			GetPlayerLimits( int& minplayers, int& maxplayers, int &defaultMaxPlayers, bool &bIsMultiplayer ) const = 0;
+
+	// Returns max splitscreen slot count ( 1 == no splits, 2 for 2-player split screen )
+	virtual int		GetMaxSplitscreenPlayers( void ) = 0;
+
+	// Return # of human slots, -1 if can't determine or don't care (engine will assume it's == maxplayers )
+	virtual int				GetMaxHumanPlayers() = 0;
+
+	virtual bool			AllowPlayerToTakeOverBots() = 0;
+
+	virtual void			OnClientFullyConnect( CEntityIndex nEntityIndex ) = 0;
+
+	virtual void		GetHostStateLoopModeInfo( HostStateLoopModeType_t type, CUtlString &loopModeName, KeyValues **ppLoopModeOptions ) = 0;
+
+	virtual bool		AllowDedicatedServers( EUniverse universe ) const = 0;
+
+	virtual void		GetConVarPrefixesToResetToDefaults( CUtlString &sSemicolonDelimitedPrefixList ) const = 0;
+
+	virtual bool		AllowSaveRestore() = 0;
+
+	virtual bool		ShouldWriteSerializedEntities() = 0;
+
+	virtual bool		IsCommandQueueEnabled() = 0;
+
+	// Returns the cq_dilation_percentage convar.
+	virtual float		GetCommandQueueDilationPercentage() = 0;
+
+	virtual bool		ShouldDedicatedMapCommandChangeLevel() = 0;
+
+	virtual bool		ShouldAllocateNewClientSlots() = 0;
+
+	virtual bool		UseSixtyFourTickInterval() = 0;
+
+	virtual bool		RegisterGameEvents( CreateInterfaceFn factory ) = 0;
+};
+
+#define INTERFACEVERSION_SERVERGAMECLIENTS		"Source2GameClients001"
+
+//-----------------------------------------------------------------------------
+// Purpose: Player / Client related functions
+//-----------------------------------------------------------------------------
+abstract_class ISource2GameClients : public IAppSystem
+{
+public:
+	virtual void			OnClientConnected( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, const char *pszAddress, bool bFakePlayer ) = 0;
+
+	// Called when the client attempts to connect (doesn't get called for bots)
+	// returning false would reject the connection with the pRejectReason message
+	virtual bool			ClientConnect( CPlayerSlot slot, const char *pszName, uint64 xuid, const char *pszNetworkID, bool unk1, CBufferString *pRejectReason ) = 0;
+
+	// Client is connected and should be put in the game
+	// type values could be:
+	// 0 - player
+	// 1 - fake player (bot)
+	// 2 - unknown
+	virtual void			ClientPutInServer( CPlayerSlot slot, char const *pszName, int type, uint64 xuid ) = 0;
+
+	// Client is going active
+	// If bLoadGame is true, don't spawn the player because its state is already setup.
+	virtual void			ClientActive( CPlayerSlot slot, bool bLoadGame, const char *pszName, uint64 xuid ) = 0;
+
+	virtual void			ClientFullyConnect( CPlayerSlot slot ) = 0;
+
+	// Client is disconnecting from server
+	virtual void			ClientDisconnect( CPlayerSlot slot, ENetworkDisconnectionReason reason,
+								const char *pszName, uint64 xuid, const char *pszNetworkID ) = 0;
+
+	// Sets the client index for the client who typed the command into his/her console
+	// virtual void			SetCommandClient( CPlayerSlot slot) = 0;
+
+	// The client has typed a command at the console
+	virtual void			ClientCommand( CPlayerSlot slot, const CCommand &args ) = 0;
+
+	// Stores the entity baseline / string table data buffer pointer on the player controller.
+	virtual void			ClientStringTableData( CPlayerSlot slot, void *pData ) = 0;
+
+	// A player changed one/several replicated cvars (name etc)
+	virtual void			ClientSettingsChanged( CPlayerSlot slot ) = 0;
+
+	// Determine PVS origin and set PVS for the player/viewentity
+	virtual void			ClientSetupVisibility( CPlayerSlot slot, vis_info_t *visinfo ) = 0;
+
+	// A block of CUserCmds has arrived from the user, decode them and buffer for execution during player simulation
+	// Will be called when CNetworkGameServerBase::GetServerState() > SS_Loading
+	// A "paused" argument equals CNetworkGameServerBase::GetServerState() == SS_Paused
+	virtual void			ProcessUsercmds( CPlayerSlot slot, const CCLCMsg_Move_t &msg, bool paused ) = 0;
+
+	virtual bool			IsPlayerSlotOccupied( CPlayerSlot slot ) = 0;
+
+	virtual bool			IsPlayerAlive( CPlayerSlot slot) = 0;
+
+	virtual int				GetPlayerScore( CPlayerSlot slot ) = 0;
+
+	// Get the ear position for a specified client
+	virtual void			ClientEarPosition( CPlayerSlot slot, Vector *pEarOrigin ) = 0;
+
+	// Anything this game .dll wants to add to the bug reporter text (e.g., the entity/model under the picker crosshair)
+	//  can be added here
+	virtual void			GetBugReportInfo( CBufferString &buf ) = 0;
+
+	// TERROR: A player sent a voice packet
+	virtual void			ClientVoice( CPlayerSlot slot ) = 0;
+
+	// A user has had their network id setup and validated
+	virtual void			NetworkIDValidated( const char *pszUserName, const char *pszNetworkID ) = 0;
+
+	// The client has submitted a keyvalues command
+	virtual void			ClientCommandKeyValues( CPlayerSlot slot, KeyValues *pKeyValues ) = 0;
+
+	virtual bool			IsGamePausable() = 0;
+
+	virtual bool			ClientCanPause( CPlayerSlot slot ) = 0;
+
+	virtual bool			HLTVClientFullyConnect( int index, const CSteamID &steamID ) = 0;
+
+	virtual void			StartHLTVServer( CEntityIndex index ) = 0;
+
+	virtual void			SendHLTVStatusMessage( IHLTVServer *, bool, bool, const char *, int, int, int ) = 0;
+
+	virtual IHLTVDirector	*GetHLTVDirector( void ) = 0;
+
+	// return m_nTickBase
+	virtual uint32			GetClientTickCount( CPlayerSlot slot ) = 0;
+
+	virtual void			GetClientVisibilityInfo( CPlayerSlot slot, vis_info_t *pOutVisInfo ) = 0;
+
+	// Handles incoming usermessages from the client
+	virtual void			ClientSvcUserMessage( CPlayerSlot slot, int um_type, uint32 size, const void *buf ) = 0;
+
+	// reads pawn->m_hViewEntity
+	virtual int				GetClientViewEntity( CPlayerSlot slot, CEntityHandle *outViewEntity ) = 0;
+
+	virtual bool			ProcessClientVoiceData( CPlayerSlot slot, void *pVoiceInfo ) = 0;
+
+	virtual bool			ValidateClientString( const char *pszCurrent, const char *pszExpected ) = 0;
+
+	virtual bool			CanProcessNetMessage( void *pNetMessage, void *pClient ) = 0;
+
+	// Called from engine's "exec" command handler. Returns false if commands are disallowed
+	// (triggers "Config %s contains invalid commands" warning). Workshop command sanitization.
+	virtual bool			ValidateScriptCommands( const char *pszCommandText, CBufferString *pFilteredOutput ) = 0;
+
+	// Deadlock: new in 6711; CSource2GameClients returns true and false.
+	virtual bool			unk_44() = 0;
+	virtual bool			unk_45() = 0;
+};
+
+typedef IVEngineServer2 IVEngineServer;
+typedef IVEngineClient2 IVEngineClient;
+typedef ISource2Server IServerGameDLL;
+typedef ISource2GameEntities IServerGameEnts;
+typedef ISource2GameClients IServerGameClients;
+
+#endif // EIFACE_H

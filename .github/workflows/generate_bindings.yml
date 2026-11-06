@@ -1,0 +1,76 @@
+name: Generate Language Bindings
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'plugify-plugin-deadlock-sdk.pplugin.in'
+      - 'version.txt'
+      - 'CMakeLists.txt'
+      - '.github/workflows/generate_bindings.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    name: Generate Bindings
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure CMake to produce manifest
+        shell: pwsh
+        run: |
+          cmake -B build -S .
+
+      - name: Build plugify-gen
+        shell: pwsh
+        run: |
+          cd bindings/generator
+          go build -o bin/plugify-gen.exe ./cmd/plugify-gen
+
+      - name: Generate bindings for all languages
+        shell: pwsh
+        run: |
+          $gen = "bindings/generator/bin/plugify-gen.exe"
+          $manifest = "build/plugify-plugin-deadlock-sdk.pplugin"
+          $languages = @("cpp", "cxx", "dlang", "dotnet", "golang", "lua", "python", "rust", "v8")
+
+          foreach ($lang in $languages) {
+              $outDir = "bindings/$lang"
+              Write-Host "Generating bindings for $lang..."
+              & $gen -manifest $manifest -output $outDir -lang $lang -overwrite
+          }
+
+      - name: Clean temporary build files
+        shell: pwsh
+        run: |
+          if (Test-Path "bindings/generator/bin") {
+              Remove-Item -Path "bindings/generator/bin" -Recurse -Force
+          }
+          if (Test-Path "build") {
+              Remove-Item -Path "build" -Recurse -Force
+          }
+
+      - name: Commit and push generated bindings
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(bindings): auto-generate bindings for all languages [skip ci]"
+          file_pattern: 'bindings/**'

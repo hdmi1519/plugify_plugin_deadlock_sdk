@@ -1,0 +1,96 @@
+name: Build Windows
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+    paths-ignore:
+      - 'README.md'
+      - 'README_ru.md'
+      - 'docs/**'
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'README_ru.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build Windows x64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup MSVC developer environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Read version
+        id: vars
+        shell: pwsh
+        run: |
+          $ver = (Get-Content version.txt).Trim()
+          echo "VERSION=$ver" >> $env:GITHUB_ENV
+          echo "version=$ver" >> $env:GITHUB_OUTPUT
+          Write-Host "Building version: $ver"
+
+      - name: Configure CMake
+        shell: pwsh
+        run: |
+          cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build plugin
+        shell: pwsh
+        run: |
+          cmake --build build --config Release
+
+      - name: Package artifacts
+        shell: pwsh
+        run: |
+          $packageName = "plugify-plugin-deadlock-sdk-build-win"
+          $packageDir = "$packageName-v$($env:VERSION)"
+          New-Item -ItemType Directory -Path $packageDir -Force
+
+          Copy-Item -Path "build/Release/plugify-plugin-deadlock-sdk.dll" -Destination "$packageDir/" -Force
+          Copy-Item -Path "build/plugify-plugin-deadlock-sdk.pplugin" -Destination "$packageDir/" -Force
+          Copy-Item -Path "signatures.jsonc" -Destination "$packageDir/" -Force
+          Copy-Item -Path "settings.jsonc" -Destination "$packageDir/" -Force
+
+          # Create archives (both with version tag and canonical name)
+          Compress-Archive -Path "$packageDir/*" -DestinationPath "$packageName.zip" -Force
+          Compress-Archive -Path "$packageDir/*" -DestinationPath "$packageName-v$($env:VERSION).zip" -Force
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}
+          path: |
+            plugify-plugin-deadlock-sdk-build-win.zip
+            plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: v${{ env.VERSION }}
+          tag_name: ${{ github.ref_name }}
+          files: |
+            plugify-plugin-deadlock-sdk-build-win.zip
+            plugify-plugin-deadlock-sdk-build-win-v${{ env.VERSION }}.zip
+          generate_release_notes: true

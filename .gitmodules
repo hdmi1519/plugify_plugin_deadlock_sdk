@@ -1,0 +1,15 @@
+[submodule "external/sourcesdk"]
+	path = external/sourcesdk
+	url = https://github.com/Wend4r/sourcesdk.git
+[submodule "external/safetyhook"]
+	path = external/safetyhook
+	url = https://github.com/cursey/safetyhook.git
+[submodule "external/nlohmann"]
+	path = external/nlohmann
+	url = https://github.com/nlohmann/json.git
+[submodule "external/plugify"]
+	path = external/plugify
+	url = https://github.com/untrustedmodders/plugify.git
+[submodule "bindings/generator"]
+	path = bindings/generator
+	url = https://github.com/untrustedmodders/plugify-gen.git
