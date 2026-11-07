@@ -13,12 +13,19 @@ static std::string g_ConnectRejectReason;
 static std::string g_ServerAddons;
 static std::map<std::string, std::string> g_ServerKeyValues;
 
+static void EnsureGlobalVars() {
+    if (!dsdk::g_pGlobalVars && dsdk::g_pEngineServer) {
+        dsdk::g_pGlobalVars = dsdk::g_pEngineServer->GetServerGlobals();
+    }
+}
+
 extern "C" {
 
 PLUGIN_API plg::string GetMapName() {
     if (!dsdk::g_CurrentMapName.empty()) {
         return plg::string(dsdk::g_CurrentMapName);
     }
+    EnsureGlobalVars();
     if (dsdk::g_pGlobalVars) {
         const char *pMap = STRING(dsdk::g_pGlobalVars->mapname);
         if (pMap && *pMap) {
@@ -70,14 +77,17 @@ PLUGIN_API void SetConnectRejectReason(const plg::string &reason) {
 }
 
 PLUGIN_API int64_t GetGlobalVars() {
+    EnsureGlobalVars();
     return reinterpret_cast<int64_t>(dsdk::g_pGlobalVars);
 }
 
 PLUGIN_API float GetGameTime() {
+    EnsureGlobalVars();
     return dsdk::g_pGlobalVars ? dsdk::g_pGlobalVars->curtime : 0.0f;
 }
 
 PLUGIN_API int32_t GetGameTickCount() {
+    EnsureGlobalVars();
     return dsdk::g_pGlobalVars ? dsdk::g_pGlobalVars->tickcount : 0;
 }
 

@@ -1809,6 +1809,16 @@
       }
     },
     {
+      "name": "GetMatchTime",
+      "group": "GameState",
+      "description": "Get current match clock in seconds",
+      "funcName": "GetMatchTime",
+      "paramTypes": [],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
       "name": "ChangeGameState",
       "group": "GameState",
       "description": "Force Deadlock game state change",

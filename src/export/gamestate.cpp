@@ -51,6 +51,45 @@ PLUGIN_API int32_t GetGameState() {
     return 7; // GameInProgress fallback
 }
 
+PLUGIN_API float GetMatchTime() {
+    void *rules = GetGameRulesInstance();
+    if (!rules) return 0.0f;
+
+    static int s_startTimeOffset = -1;
+    if (s_startTimeOffset == -1) {
+        s_startTimeOffset = schema::GetOffset("CCitadelGameRules", hash_32_fnv1a_const("CCitadelGameRules"),
+                                              "m_flGameStartTime", hash_32_fnv1a_const("m_flGameStartTime")).Offset;
+    }
+    if (s_startTimeOffset <= 0) return 0.0f;
+
+    float startTime = *reinterpret_cast<float *>(reinterpret_cast<uintptr_t>(rules) + s_startTimeOffset);
+    if (startTime <= 0.0f) return 0.0f;
+
+    if (!dsdk::g_pGlobalVars && dsdk::g_pEngineServer) {
+        dsdk::g_pGlobalVars = dsdk::g_pEngineServer->GetServerGlobals();
+    }
+    if (!dsdk::g_pGlobalVars) return 0.0f;
+
+    float curTime = dsdk::g_pGlobalVars->curtime;
+    if (curTime < startTime) return 0.0f;
+
+    static int s_pauseTicksOffset = -1;
+    if (s_pauseTicksOffset == -1) {
+        s_pauseTicksOffset = schema::GetOffset("CGameRules", hash_32_fnv1a_const("CGameRules"),
+                                               "m_nTotalPausedTicks", hash_32_fnv1a_const("m_nTotalPausedTicks")).Offset;
+    }
+    float pausedTime = 0.0f;
+    if (s_pauseTicksOffset > 0) {
+        int pausedTicks = *reinterpret_cast<int *>(reinterpret_cast<uintptr_t>(rules) + s_pauseTicksOffset);
+        if (pausedTicks > 0) {
+            pausedTime = pausedTicks * dsdk::g_pGlobalVars->interval_per_tick;
+        }
+    }
+
+    float matchTime = curTime - pausedTime - startTime;
+    return matchTime > 0.0f ? matchTime : 0.0f;
+}
+
 PLUGIN_API void ChangeGameState(int32_t newState) {
     void *rules = GetGameRulesInstance();
     if (!rules) return;

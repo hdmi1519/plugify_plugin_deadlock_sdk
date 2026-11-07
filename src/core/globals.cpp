@@ -62,6 +62,9 @@ void InitializeGlobals() {
     g_pFullFileSystem = reinterpret_cast<IFileSystem *>(QueryInterface("filesystem_stdio.dll", "VFileSystem017"));
     g_pNetworkMessages = reinterpret_cast<INetworkMessages *>(QueryInterface("networksystem.dll", "NetworkMessagesVersion001"));
     g_pGameResourceServiceServer = reinterpret_cast<IGameResourceService *>(QueryInterface("engine2.dll", "GameResourceServiceServerV001"));
+    if (g_pEngineServer) {
+        g_pGlobalVars = g_pEngineServer->GetServerGlobals();
+    }
 
     ::g_pSource2Server = g_pSource2Server;
     ::g_pSource2GameClients = g_pSource2GameClients;
