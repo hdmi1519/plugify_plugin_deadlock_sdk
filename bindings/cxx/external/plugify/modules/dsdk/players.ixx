@@ -174,4 +174,16 @@ export namespace dsdk {
     return __dsdk_GetPlayerPing(playerSlot);
   }
 
+  using _GetPlayerTimeConnected = float (*)(int32_t);
+  PLUGIFY_EXPORT _GetPlayerTimeConnected __dsdk_GetPlayerTimeConnected = nullptr;
+  /**
+   * @brief Get connection time of player in seconds
+   * @param playerSlot (int32)
+   * @return float
+   */
+
+  float GetPlayerTimeConnected(int32_t playerSlot) {
+    return __dsdk_GetPlayerTimeConnected(playerSlot);
+  }
+
 } // namespace dsdk

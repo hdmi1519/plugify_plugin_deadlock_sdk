@@ -198,3 +198,17 @@ pub type _GetPlayerPing = unsafe extern "C" fn(i32) -> i32;
 #[unsafe(no_mangle)]
 pub static mut __dsdk_GetPlayerPing: Option<_GetPlayerPing> = None;
 
+/// Get connection time of player in seconds
+///
+/// # Arguments
+/// * `playerSlot` - (int32)
+#[track_caller]
+#[allow(dead_code, non_snake_case)]
+pub fn GetPlayerTimeConnected(playerSlot: i32) -> f32 {
+    unsafe { __dsdk_GetPlayerTimeConnected.expect("GetPlayerTimeConnected function was not found")(playerSlot) }
+}
+pub type _GetPlayerTimeConnected = unsafe extern "C" fn(i32) -> f32;
+#[allow(dead_code, non_upper_case_globals)]
+#[unsafe(no_mangle)]
+pub static mut __dsdk_GetPlayerTimeConnected: Option<_GetPlayerTimeConnected> = None;
+

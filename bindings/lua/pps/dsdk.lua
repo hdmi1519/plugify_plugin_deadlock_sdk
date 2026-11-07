@@ -235,6 +235,11 @@ function ChangeTeam(controller, teamNum, keepHero) end
 -- @return int32 
 function GetPlayerPing(playerSlot) end
 
+--- Get connection time of player in seconds
+-- @param playerSlot int32 
+-- @return float 
+function GetPlayerTimeConnected(playerSlot) end
+
 --- Select a hero for controller
 -- @param controller int64 
 -- @param heroName string 

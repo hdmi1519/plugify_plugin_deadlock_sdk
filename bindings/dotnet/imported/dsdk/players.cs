@@ -272,6 +272,24 @@ namespace dsdk {
 			return _GetPlayerPing(playerSlot);
 		}
 
+#region GetPlayerTimeConnected
+		private static delegate*<int, float> _GetPlayerTimeConnected = &___GetPlayerTimeConnected;
+		private static delegate* unmanaged[Cdecl]<int, float> __GetPlayerTimeConnected;
+		private static float ___GetPlayerTimeConnected(int playerSlot)
+		{
+			float __retVal = __GetPlayerTimeConnected(playerSlot);
+			return __retVal;
+		}
+#endregion GetPlayerTimeConnected
+		/// <summary>
+		/// Get connection time of player in seconds
+		/// </summary>
+		/// <param name="playerSlot">playerSlot</param>
+		internal static float GetPlayerTimeConnected(int playerSlot)
+		{
+			return _GetPlayerTimeConnected(playerSlot);
+		}
+
 	}
 
 #pragma warning restore CS0649

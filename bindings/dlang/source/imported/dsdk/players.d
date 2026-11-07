@@ -203,3 +203,18 @@ int GetPlayerPing(int playerSlot) {
 alias _GetPlayerPing = extern (C) int function(int playerSlot);
 export __gshared _GetPlayerPing __dsdk_GetPlayerPing = null;
 
+/++
+	Get connection time of player in seconds
+
+	Params:
+		playerSlot = 
+
+	Returns:
+		Return value
++/
+float GetPlayerTimeConnected(int playerSlot) {
+	return __dsdk_GetPlayerTimeConnected(playerSlot);
+}
+alias _GetPlayerTimeConnected = extern (C) float function(int playerSlot);
+export __gshared _GetPlayerTimeConnected __dsdk_GetPlayerTimeConnected = null;
+

@@ -470,6 +470,12 @@ declare module ":dsdk" {
   export function GetPlayerPing(playerSlot: number): number;
 
   /**
+   * Get connection time of player in seconds
+   * @param playerSlot
+   */
+  export function GetPlayerTimeConnected(playerSlot: number): number;
+
+  /**
    * Select a hero for controller
    * @param controller
    * @param heroName
