@@ -25,7 +25,7 @@ public:
     SCHEMA_FIELD(uint64_t, m_steamID);
     SCHEMA_FIELD(PlayerConnectedState, m_iConnected);
 
-    bool IsConnected() const {
+    bool IsConnected() {
         return m_iConnected.Get() == PlayerConnectedState::PlayerConnected;
     }
 
