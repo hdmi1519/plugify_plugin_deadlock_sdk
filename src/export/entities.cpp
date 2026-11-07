@@ -43,6 +43,7 @@ PLUGIN_API void RemoveEntity(int64_t entity) {
 }
 
 PLUGIN_API int64_t GetEntityByIndex(int32_t index) {
+    if (index < 0) return 0;
     auto *sys = GameEntitySystem();
     if (!sys) return 0;
     return reinterpret_cast<int64_t>(sys->GetEntityInstance(CEntityIndex(index)));
@@ -93,7 +94,7 @@ PLUGIN_API plg::string GetEntityDesignerName(int64_t entity) {
 }
 
 PLUGIN_API plg::string GetEntityClassname(int64_t entity) {
-    if (!entity) return plg::string("CBaseEntity");
+    if (!entity) return plg::string("");
     auto *inst = reinterpret_cast<CEntityInstance *>(entity);
     if (inst && inst->m_pEntity && inst->m_pEntity->m_pClass &&
         inst->m_pEntity->m_pClass->m_pServerClass &&
@@ -101,7 +102,7 @@ PLUGIN_API plg::string GetEntityClassname(int64_t entity) {
         const char *name = inst->m_pEntity->m_pClass->m_pServerClass->m_pDLLClassName;
         if (name && *name) return plg::string(name);
     }
-    return plg::string("CBaseEntity");
+    return plg::string("");
 }
 
 PLUGIN_API bool EntityDerivesFrom(int64_t entity, const plg::string &baseClassName) {

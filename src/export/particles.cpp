@@ -41,9 +41,11 @@ PLUGIN_API int64_t CreateParticle(const plg::string &particleName, int32_t attac
                                               "m_hControlPointEnts", hash_32_fnv1a_const("m_hControlPointEnts")).Offset;
         }
         if (s_cpEntsOffset > 0) {
-            auto *cpEnts = reinterpret_cast<CEntityHandle *>(reinterpret_cast<uintptr_t>(inst) + s_cpEntsOffset);
             auto *targetInst = reinterpret_cast<CEntityInstance *>(entity);
-            cpEnts[0] = targetInst->GetRefEHandle();
+            if (targetInst && targetInst->m_pEntity) {
+                auto *cpEnts = reinterpret_cast<CEntityHandle *>(reinterpret_cast<uintptr_t>(inst) + s_cpEntsOffset);
+                cpEnts[0] = targetInst->GetRefEHandle();
+            }
         }
     }
 

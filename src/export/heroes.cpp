@@ -2,6 +2,7 @@
 #include "core/memory/data_loader.hpp"
 #include "core/logger.hpp"
 #include "core/sdk/CCitadelPlayerController.hpp"
+#include "core/sdk/schema/Schema.hpp"
 
 inline uintptr_t ResolveE8Call(uintptr_t callAddr) {
     int32_t rel = *reinterpret_cast<const int32_t *>(callAddr + 1);
@@ -106,7 +107,50 @@ PLUGIN_API int64_t GetHeroData(const plg::string &heroName) {
 }
 
 PLUGIN_API plg::string GetHeroName(int64_t pawn) {
-    return plg::string("hero_inferno");
+    if (!pawn) return plg::string("");
+
+    static int s_heroCompOffset = -1;
+    if (s_heroCompOffset == -1) {
+        s_heroCompOffset = schema::GetOffset("CCitadelPlayerPawn", hash_32_fnv1a_const("CCitadelPlayerPawn"),
+                                             "m_CCitadelHeroComponent", hash_32_fnv1a_const("m_CCitadelHeroComponent")).Offset;
+    }
+    static int s_spawnedHeroOffset = -1;
+    if (s_spawnedHeroOffset == -1) {
+        s_spawnedHeroOffset = schema::GetOffset("CCitadelHeroComponent", hash_32_fnv1a_const("CCitadelHeroComponent"),
+                                               "m_spawnedHero", hash_32_fnv1a_const("m_spawnedHero")).Offset;
+    }
+    static int s_heroIdOffset = -1;
+    if (s_heroIdOffset == -1) {
+        s_heroIdOffset = schema::GetOffset("CitadelHeroSpawnData_t", hash_32_fnv1a_const("CitadelHeroSpawnData_t"),
+                                           "m_nHeroID", hash_32_fnv1a_const("m_nHeroID")).Offset;
+    }
+
+    if (s_heroCompOffset > 0 && s_spawnedHeroOffset >= 0 && s_heroIdOffset >= 0) {
+        uintptr_t heroCompAddr = *reinterpret_cast<uintptr_t *>(pawn + s_heroCompOffset);
+        if (heroCompAddr) {
+            uint32_t heroId = *reinterpret_cast<uint32_t *>(heroCompAddr + s_spawnedHeroOffset + s_heroIdOffset);
+            if (heroId > 0) {
+                void *manager = GetHeroDataManager();
+                auto getByIdAddr = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::GetHeroById");
+                if (manager && getByIdAddr.has_value()) {
+                    auto getHeroById = reinterpret_cast<GetHeroByIdFn>(*getByIdAddr);
+                    void *heroData = getHeroById(manager, heroId);
+                    if (heroData) {
+                        static int s_searchNameOffset = -1;
+                        if (s_searchNameOffset == -1) {
+                            s_searchNameOffset = schema::GetOffset("CitadelHeroData_t", hash_32_fnv1a_const("CitadelHeroData_t"),
+                                                                   "m_strHeroSearchName", hash_32_fnv1a_const("m_strHeroSearchName")).Offset;
+                        }
+                        if (s_searchNameOffset > 0) {
+                            const char *pStr = *reinterpret_cast<const char **>(reinterpret_cast<uintptr_t>(heroData) + s_searchNameOffset);
+                            if (pStr && *pStr) return plg::string(pStr);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return plg::string("");
 }
 
 }

@@ -53,6 +53,7 @@ PLUGIN_API int32_t GetGameState() {
 
 PLUGIN_API void ChangeGameState(int32_t newState) {
     void *rules = GetGameRulesInstance();
+    if (!rules) return;
     auto offset = dsdk::MemoryDataLoader::Get().GetOffset("CCitadelGameRules::ChangeGameState");
     if (offset.has_value()) {
         auto fn = reinterpret_cast<ChangeGameStateFn>(*offset);

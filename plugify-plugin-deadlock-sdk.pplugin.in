@@ -1200,6 +1200,21 @@
       }
     },
     {
+      "name": "GetPlayerTimeConnected",
+      "group": "Players",
+      "description": "Get connection time of player in seconds",
+      "funcName": "GetPlayerTimeConnected",
+      "paramTypes": [
+        {
+          "name": "playerSlot",
+          "type": "int32"
+        }
+      ],
+      "retType": {
+        "type": "float"
+      }
+    },
+    {
       "name": "SelectHero",
       "group": "Heroes",
       "description": "Select a hero for controller",

@@ -342,6 +342,7 @@ PLUGIN_API void ServerCommand(const plg::string &command) {
 }
 
 PLUGIN_API bool ExecuteCommandAsPlayer(int32_t playerSlot, const plg::string &command) {
+    if (playerSlot < 0 || playerSlot >= 64) return false;
     auto offset = dsdk::MemoryDataLoader::Get().GetOffset("ExecuteCommandAsPlayer");
     if (!offset.has_value()) {
         if (dsdk::g_pEngineServer) {
@@ -356,6 +357,7 @@ PLUGIN_API bool ExecuteCommandAsPlayer(int32_t playerSlot, const plg::string &co
 }
 
 PLUGIN_API void ClientCommand(int32_t playerSlot, const plg::string &command) {
+    if (playerSlot < 0 || playerSlot >= 64) return;
     if (dsdk::g_pEngineServer) {
         dsdk::g_pEngineServer->ClientCommand(CPlayerSlot(playerSlot), command.c_str());
     }

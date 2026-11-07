@@ -7,6 +7,7 @@
 extern "C" {
 
 PLUGIN_API void PrintToChat(int32_t playerSlot, const plg::string &message) {
+    if (playerSlot < 0 || playerSlot >= 64) return;
     dsdk::SendChatMsg(playerSlot, message.c_str());
 }
 
@@ -19,6 +20,7 @@ PLUGIN_API void PrintToConsole(int32_t playerSlot, const plg::string &message) {
         Msg("%s\n", message.c_str());
         return;
     }
+    if (playerSlot >= 64) return;
     dsdk::SendTextMsg(playerSlot, 2, message.c_str());
 }
 
@@ -28,6 +30,7 @@ PLUGIN_API void PrintToConsoleAll(const plg::string &message) {
 }
 
 PLUGIN_API void HudAnnounce(int32_t playerSlot, const plg::string &title, const plg::string &description, float duration) {
+    if (playerSlot < 0 || playerSlot >= 64) return;
     dsdk::SendHudAnnouncement(playerSlot, title.c_str(), description.c_str(), duration);
 }
 
