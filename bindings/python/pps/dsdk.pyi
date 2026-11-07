@@ -791,6 +791,15 @@ def GetGameState() -> EGameState:
     """
     ...
 
+def GetMatchTime() -> float:
+    """
+    Get current match clock in seconds
+
+    Returns:
+        float: 
+    """
+    ...
+
 def ChangeGameState(newState: EGameState) -> None:
     """
     Force Deadlock game state change

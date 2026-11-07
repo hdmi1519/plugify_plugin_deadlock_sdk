@@ -691,6 +691,11 @@ declare module ":dsdk" {
   export function GetGameState(): EGameState;
 
   /**
+   * Get current match clock in seconds
+   */
+  export function GetMatchTime(): number;
+
+  /**
    * Force Deadlock game state change
    * @param newState
    */

@@ -112,6 +112,8 @@ dsdk::_GetConfigFloat __dsdk_GetConfigFloat = nullptr;
 
 dsdk::_GetGameState __dsdk_GetGameState = nullptr;
 
+dsdk::_GetMatchTime __dsdk_GetMatchTime = nullptr;
+
 dsdk::_ChangeGameState __dsdk_ChangeGameState = nullptr;
 
 dsdk::_SetWaitingForPlayersRoster __dsdk_SetWaitingForPlayersRoster = nullptr;

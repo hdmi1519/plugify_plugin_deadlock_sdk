@@ -28,6 +28,23 @@ namespace dsdk {
 			return _GetGameState();
 		}
 
+#region GetMatchTime
+		private static delegate*<float> _GetMatchTime = &___GetMatchTime;
+		private static delegate* unmanaged[Cdecl]<float> __GetMatchTime;
+		private static float ___GetMatchTime()
+		{
+			float __retVal = __GetMatchTime();
+			return __retVal;
+		}
+#endregion GetMatchTime
+		/// <summary>
+		/// Get current match clock in seconds
+		/// </summary>
+		internal static float GetMatchTime()
+		{
+			return _GetMatchTime();
+		}
+
 #region ChangeGameState
 		private static delegate*<EGameState, void> _ChangeGameState = &___ChangeGameState;
 		private static delegate* unmanaged[Cdecl]<EGameState, void> __ChangeGameState;
