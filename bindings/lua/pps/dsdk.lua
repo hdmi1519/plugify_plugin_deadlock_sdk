@@ -418,6 +418,10 @@ function GetConfigFloat(key, defaultValue) end
 -- @return int32 
 function GetGameState() end
 
+--- Get current match clock in seconds
+-- @return float 
+function GetMatchTime() end
+
 --- Force Deadlock game state change
 -- @param newState int32 
 function ChangeGameState(newState) end

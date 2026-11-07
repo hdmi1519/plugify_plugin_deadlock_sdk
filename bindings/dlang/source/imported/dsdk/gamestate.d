@@ -21,6 +21,18 @@ alias _GetGameState = extern (C) EGameState function();
 export __gshared _GetGameState __dsdk_GetGameState = null;
 
 /++
+	Get current match clock in seconds
+
+	Returns:
+		Return value
++/
+float GetMatchTime() {
+	return __dsdk_GetMatchTime();
+}
+alias _GetMatchTime = extern (C) float function();
+export __gshared _GetMatchTime __dsdk_GetMatchTime = null;
+
+/++
 	Force Deadlock game state change
 
 	Params:

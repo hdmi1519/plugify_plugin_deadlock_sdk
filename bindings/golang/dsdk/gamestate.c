@@ -3,6 +3,9 @@
 PLUGIFY_EXPORT int32_t (*__dsdk_GetGameState)() = NULL;
 
 
+PLUGIFY_EXPORT float (*__dsdk_GetMatchTime)() = NULL;
+
+
 PLUGIFY_EXPORT void (*__dsdk_ChangeGameState)(int32_t) = NULL;
 
 

@@ -21,6 +21,18 @@ namespace dsdk {
     return __dsdk_GetGameState();
   }
 
+  using _GetMatchTime = float (*)();
+}
+extern "C" PLUGIN_API dsdk::_GetMatchTime __dsdk_GetMatchTime;
+namespace dsdk {
+  /**
+   * @brief Get current match clock in seconds
+   * @return float
+   */
+  inline float GetMatchTime() {
+    return __dsdk_GetMatchTime();
+  }
+
   using _ChangeGameState = void (*)(EGameState);
 }
 extern "C" PLUGIN_API dsdk::_ChangeGameState __dsdk_ChangeGameState;

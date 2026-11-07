@@ -22,6 +22,17 @@ pub type _GetGameState = unsafe extern "C" fn() -> EGameState;
 #[unsafe(no_mangle)]
 pub static mut __dsdk_GetGameState: Option<_GetGameState> = None;
 
+/// Get current match clock in seconds
+#[track_caller]
+#[allow(dead_code, non_snake_case)]
+pub fn GetMatchTime() -> f32 {
+    unsafe { __dsdk_GetMatchTime.expect("GetMatchTime function was not found")() }
+}
+pub type _GetMatchTime = unsafe extern "C" fn() -> f32;
+#[allow(dead_code, non_upper_case_globals)]
+#[unsafe(no_mangle)]
+pub static mut __dsdk_GetMatchTime: Option<_GetMatchTime> = None;
+
 /// Force Deadlock game state change
 ///
 /// # Arguments

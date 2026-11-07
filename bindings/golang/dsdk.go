@@ -236,6 +236,10 @@ var Dsdk_GetConfigFloat = &dsdk_GetConfigFloat
 var dsdk_GetGameState func() dsdk.EGameState
 var Dsdk_GetGameState = &dsdk_GetGameState
 
+//go:linkname dsdk_GetMatchTime github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang/dsdk._GetMatchTime
+var dsdk_GetMatchTime func() float32
+var Dsdk_GetMatchTime = &dsdk_GetMatchTime
+
 //go:linkname dsdk_ChangeGameState github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang/dsdk._ChangeGameState
 var dsdk_ChangeGameState func(newState dsdk.EGameState)
 var Dsdk_ChangeGameState = &dsdk_ChangeGameState

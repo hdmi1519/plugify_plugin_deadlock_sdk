@@ -3,6 +3,7 @@ package dsdk
 /*
 #include "gamestate.h"
 #cgo noescape GetGameState
+#cgo noescape GetMatchTime
 #cgo noescape ChangeGameState
 #cgo noescape SetWaitingForPlayersRoster
 #cgo noescape SetMatchStartOnAnyMap
@@ -35,6 +36,18 @@ var _GetGameState = func() EGameState {
 //
 func GetGameState() EGameState {
 	return _GetGameState()
+}
+
+var _GetMatchTime = func() float32 {
+	__retVal := float32(C.GetMatchTime())
+	return __retVal
+}
+
+// GetMatchTime 
+//  @brief Get current match clock in seconds
+//
+func GetMatchTime() float32 {
+	return _GetMatchTime()
 }
 
 var _ChangeGameState = func(newState EGameState) {

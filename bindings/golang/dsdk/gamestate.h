@@ -8,6 +8,12 @@ static int32_t GetGameState() {
 	return __dsdk_GetGameState();
 }
 
+extern float (*__dsdk_GetMatchTime)();
+
+static float GetMatchTime() {
+	return __dsdk_GetMatchTime();
+}
+
 extern void (*__dsdk_ChangeGameState)(int32_t);
 
 static void ChangeGameState(int32_t newState) {

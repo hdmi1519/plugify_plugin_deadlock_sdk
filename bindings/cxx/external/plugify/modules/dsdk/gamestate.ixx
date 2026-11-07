@@ -27,6 +27,17 @@ export namespace dsdk {
     return __dsdk_GetGameState();
   }
 
+  using _GetMatchTime = float (*)();
+  PLUGIFY_EXPORT _GetMatchTime __dsdk_GetMatchTime = nullptr;
+  /**
+   * @brief Get current match clock in seconds
+   * @return float
+   */
+
+  float GetMatchTime() {
+    return __dsdk_GetMatchTime();
+  }
+
   using _ChangeGameState = void (*)(EGameState);
   PLUGIFY_EXPORT _ChangeGameState __dsdk_ChangeGameState = nullptr;
   /**
