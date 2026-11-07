@@ -1,6 +1,7 @@
 #include "pch.hpp"
 #include "core/globals.hpp"
 #include "core/memory/module.hpp"
+#include <eiface.h>
 
 // Forward declare globals from Interfaces.cpp
 extern ICvar *cvar;
