@@ -180,4 +180,17 @@ namespace dsdk {
     return __dsdk_GetPlayerPing(playerSlot);
   }
 
+  using _GetPlayerTimeConnected = float (*)(int32_t);
+}
+extern "C" PLUGIN_API dsdk::_GetPlayerTimeConnected __dsdk_GetPlayerTimeConnected;
+namespace dsdk {
+  /**
+   * @brief Get connection time of player in seconds
+   * @param playerSlot (int32)
+   * @return float
+   */
+  inline float GetPlayerTimeConnected(int32_t playerSlot) {
+    return __dsdk_GetPlayerTimeConnected(playerSlot);
+  }
+
 } // namespace dsdk

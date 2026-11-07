@@ -15,6 +15,7 @@ package dsdk
 #cgo noescape KickClient
 #cgo noescape ChangeTeam
 #cgo noescape GetPlayerPing
+#cgo noescape GetPlayerTimeConnected
 */
 import "C"
 import (
@@ -240,5 +241,19 @@ var _GetPlayerPing = func(playerSlot int32) int32 {
 //
 func GetPlayerPing(playerSlot int32) int32 {
 	return _GetPlayerPing(playerSlot)
+}
+
+var _GetPlayerTimeConnected = func(playerSlot int32) float32 {
+	var __retVal float32
+	__playerSlot := C.int32_t(playerSlot)
+	__retVal = float32(C.GetPlayerTimeConnected(__playerSlot))
+	return __retVal
+}
+
+// GetPlayerTimeConnected 
+//  @brief Get connection time of player in seconds
+//
+func GetPlayerTimeConnected(playerSlot int32) float32 {
+	return _GetPlayerTimeConnected(playerSlot)
 }
 

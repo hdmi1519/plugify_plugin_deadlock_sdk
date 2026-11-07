@@ -80,3 +80,9 @@ static int32_t GetPlayerPing(int32_t playerSlot) {
 	return __dsdk_GetPlayerPing(playerSlot);
 }
 
+extern float (*__dsdk_GetPlayerTimeConnected)(int32_t);
+
+static float GetPlayerTimeConnected(int32_t playerSlot) {
+	return __dsdk_GetPlayerTimeConnected(playerSlot);
+}
+

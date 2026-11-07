@@ -50,6 +50,8 @@ dsdk::_ChangeTeam __dsdk_ChangeTeam = nullptr;
 
 dsdk::_GetPlayerPing __dsdk_GetPlayerPing = nullptr;
 
+dsdk::_GetPlayerTimeConnected __dsdk_GetPlayerTimeConnected = nullptr;
+
 dsdk::_SelectHero __dsdk_SelectHero = nullptr;
 
 dsdk::_ResetHero __dsdk_ResetHero = nullptr;

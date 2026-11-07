@@ -112,6 +112,10 @@ var Dsdk_ChangeTeam = &dsdk_ChangeTeam
 var dsdk_GetPlayerPing func(playerSlot int32) int32
 var Dsdk_GetPlayerPing = &dsdk_GetPlayerPing
 
+//go:linkname dsdk_GetPlayerTimeConnected github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang/dsdk._GetPlayerTimeConnected
+var dsdk_GetPlayerTimeConnected func(playerSlot int32) float32
+var Dsdk_GetPlayerTimeConnected = &dsdk_GetPlayerTimeConnected
+
 //go:linkname dsdk_SelectHero github.com/hdmi1519/plugify_plugin_deadlock_sdk/bindings/golang/dsdk._SelectHero
 var dsdk_SelectHero func(controller int64, heroName string)
 var Dsdk_SelectHero = &dsdk_SelectHero

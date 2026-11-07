@@ -39,3 +39,6 @@ PLUGIFY_EXPORT void (*__dsdk_ChangeTeam)(int64_t, int32_t, bool) = NULL;
 PLUGIFY_EXPORT int32_t (*__dsdk_GetPlayerPing)(int32_t) = NULL;
 
 
+PLUGIFY_EXPORT float (*__dsdk_GetPlayerTimeConnected)(int32_t) = NULL;
+
+

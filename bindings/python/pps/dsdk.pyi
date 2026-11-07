@@ -408,6 +408,18 @@ def GetPlayerPing(playerSlot: int) -> int:
     """
     ...
 
+def GetPlayerTimeConnected(playerSlot: int) -> float:
+    """
+    Get connection time of player in seconds
+
+    Args:
+        playerSlot (int32): 
+
+    Returns:
+        float: 
+    """
+    ...
+
 def SelectHero(controller: int, heroName: str) -> None:
     """
     Select a hero for controller
