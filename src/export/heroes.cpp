@@ -106,9 +106,34 @@ PLUGIN_API int64_t GetHeroData(const plg::string &heroName) {
     return reinterpret_cast<int64_t>(GetHeroDataPtr(heroName.c_str()));
 }
 
+static plg::string ResolveHeroNameById(uint32_t heroId) {
+    if (heroId == 0) return plg::string("");
+    void *manager = GetHeroDataManager();
+    auto getByIdAddr = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::GetHeroById");
+    if (manager && getByIdAddr.has_value()) {
+        auto getHeroById = reinterpret_cast<GetHeroByIdFn>(*getByIdAddr);
+        void *heroData = getHeroById(manager, heroId);
+        if (heroData) {
+            static int s_searchNameOffset = -1;
+            if (s_searchNameOffset == -1) {
+                s_searchNameOffset = schema::GetOffset("CitadelHeroData_t", hash_32_fnv1a_const("CitadelHeroData_t"),
+                                                       "m_strHeroSearchName", hash_32_fnv1a_const("m_strHeroSearchName")).Offset;
+            }
+            if (s_searchNameOffset > 0) {
+                const char *pStr = *reinterpret_cast<const char **>(reinterpret_cast<uintptr_t>(heroData) + s_searchNameOffset);
+                if (pStr && *pStr) return plg::string(pStr);
+            }
+        }
+    }
+    return plg::string("");
+}
+
 PLUGIN_API plg::string GetHeroName(int64_t pawn) {
     if (!pawn) return plg::string("");
 
+    uint32_t heroId = 0;
+
+    // 1. Try reading from CCitadelPlayerPawn::m_CCitadelHeroComponent (embedded struct, NOT a pointer!)
     static int s_heroCompOffset = -1;
     if (s_heroCompOffset == -1) {
         s_heroCompOffset = schema::GetOffset("CCitadelPlayerPawn", hash_32_fnv1a_const("CCitadelPlayerPawn"),
@@ -126,31 +151,43 @@ PLUGIN_API plg::string GetHeroName(int64_t pawn) {
     }
 
     if (s_heroCompOffset > 0 && s_spawnedHeroOffset >= 0 && s_heroIdOffset >= 0) {
-        uintptr_t heroCompAddr = *reinterpret_cast<uintptr_t *>(pawn + s_heroCompOffset);
-        if (heroCompAddr) {
-            uint32_t heroId = *reinterpret_cast<uint32_t *>(heroCompAddr + s_spawnedHeroOffset + s_heroIdOffset);
-            if (heroId > 0) {
-                void *manager = GetHeroDataManager();
-                auto getByIdAddr = dsdk::MemoryDataLoader::Get().GetOffset("CHeroDefinitionManager::GetHeroById");
-                if (manager && getByIdAddr.has_value()) {
-                    auto getHeroById = reinterpret_cast<GetHeroByIdFn>(*getByIdAddr);
-                    void *heroData = getHeroById(manager, heroId);
-                    if (heroData) {
-                        static int s_searchNameOffset = -1;
-                        if (s_searchNameOffset == -1) {
-                            s_searchNameOffset = schema::GetOffset("CitadelHeroData_t", hash_32_fnv1a_const("CitadelHeroData_t"),
-                                                                   "m_strHeroSearchName", hash_32_fnv1a_const("m_strHeroSearchName")).Offset;
-                        }
-                        if (s_searchNameOffset > 0) {
-                            const char *pStr = *reinterpret_cast<const char **>(reinterpret_cast<uintptr_t>(heroData) + s_searchNameOffset);
-                            if (pStr && *pStr) return plg::string(pStr);
-                        }
-                    }
-                }
+        uintptr_t heroCompAddr = static_cast<uintptr_t>(pawn) + s_heroCompOffset;
+        heroId = *reinterpret_cast<uint32_t *>(heroCompAddr + s_spawnedHeroOffset + s_heroIdOffset);
+    }
+
+    static int s_playerDataGlobalOffset = -1;
+    if (s_playerDataGlobalOffset == -1) {
+        s_playerDataGlobalOffset = schema::GetOffset("CCitadelPlayerController", hash_32_fnv1a_const("CCitadelPlayerController"),
+                                                     "m_PlayerDataGlobal", hash_32_fnv1a_const("m_PlayerDataGlobal")).Offset;
+    }
+    static int s_ctrlHeroIdOffset = -1;
+    if (s_ctrlHeroIdOffset == -1) {
+        s_ctrlHeroIdOffset = schema::GetOffset("PlayerDataGlobal_t", hash_32_fnv1a_const("PlayerDataGlobal_t"),
+                                               "m_nHeroID", hash_32_fnv1a_const("m_nHeroID")).Offset;
+    }
+
+    // 2. If heroId is 0, maybe pawn's controller has it in m_PlayerDataGlobal.m_nHeroID
+    if (heroId == 0) {
+        static int s_hControllerOffset = -1;
+        if (s_hControllerOffset == -1) {
+            s_hControllerOffset = schema::GetOffset("CBasePlayerPawn", hash_32_fnv1a_const("CBasePlayerPawn"),
+                                                    "m_hController", hash_32_fnv1a_const("m_hController")).Offset;
+        }
+        if (s_hControllerOffset > 0) {
+            auto *hCtrl = reinterpret_cast<CHandle<CBaseEntity> *>(static_cast<uintptr_t>(pawn) + s_hControllerOffset);
+            auto *ctrl = hCtrl ? hCtrl->Get() : nullptr;
+            if (ctrl && s_playerDataGlobalOffset > 0 && s_ctrlHeroIdOffset >= 0) {
+                heroId = *reinterpret_cast<uint32_t *>(reinterpret_cast<uintptr_t>(ctrl) + s_playerDataGlobalOffset + s_ctrlHeroIdOffset);
             }
         }
     }
-    return plg::string("");
+
+    // 3. What if the caller passed the controller directly as the argument?
+    if (heroId == 0 && s_playerDataGlobalOffset > 0 && s_ctrlHeroIdOffset >= 0) {
+        heroId = *reinterpret_cast<uint32_t *>(static_cast<uintptr_t>(pawn) + s_playerDataGlobalOffset + s_ctrlHeroIdOffset);
+    }
+
+    return ResolveHeroNameById(heroId);
 }
 
 }
